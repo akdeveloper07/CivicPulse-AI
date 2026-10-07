@@ -2,7 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { exec } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,19 +23,28 @@ function findDistDir() {
 }
 
 let DIST_DIR = findDistDir();
+let isBuilding = false;
+let buildError = null;
 
-if (!DIST_DIR) {
-  console.log('Vite dist/ directory missing in frontend. Triggering auto-build...');
-  try {
-    execSync('npm install && npm run build', { cwd: __dirname, stdio: 'inherit' });
-    DIST_DIR = findDistDir();
-  } catch (buildErr) {
-    console.error('Auto-build failed:', buildErr.message);
-  }
+function triggerAsyncBuild() {
+  if (isBuilding) return;
+  isBuilding = true;
+  console.log('Vite dist/ directory missing in frontend. Triggering non-blocking background build...');
+
+  exec('npm run build', { cwd: __dirname }, (err, stdout, stderr) => {
+    isBuilding = false;
+    if (err) {
+      console.error('Async build failed:', err.message);
+      buildError = err.message;
+    } else {
+      console.log('Async build completed successfully!');
+      DIST_DIR = findDistDir();
+    }
+  });
 }
 
 if (!DIST_DIR) {
-  DIST_DIR = path.join(__dirname, 'dist');
+  triggerAsyncBuild();
 }
 
 const MIME_TYPES = {
@@ -52,27 +61,47 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+  DIST_DIR = DIST_DIR || findDistDir();
+
+  if (!DIST_DIR) {
+    if (!isBuilding && !buildError) {
+      triggerAsyncBuild();
+    }
+
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>CivicPulse AI - Initializing App</title>
+        <meta http-equiv="refresh" content="5">
+        <style>
+          body { font-family: system-ui, -apple-system, sans-serif; background: #0b0f19; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+          .card { background: #1e293b; padding: 2.5rem; border-radius: 1rem; border: 1px solid #334155; text-align: center; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
+          .spinner { width: 40px; height: 40px; border: 4px solid #334155; border-top-color: #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+          h2 { color: #38bdf8; margin-top: 0; }
+          p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="spinner"></div>
+          <h2>CivicPulse AI Initializing...</h2>
+          <p>Compiling static frontend bundle. This page will automatically refresh every 5 seconds.</p>
+          ${buildError ? `<p style="color:#ef4444; font-size:0.85rem;">Build status: ${buildError}</p>` : ''}
+        </div>
+      </body>
+      </html>
+    `);
+    return;
+  }
+
   const targetFile = req.url === '/' ? 'index.html' : req.url;
   let filePath = path.join(DIST_DIR, targetFile);
 
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
     filePath = path.join(DIST_DIR, 'index.html');
-  }
-
-  if (!fs.existsSync(filePath)) {
-    res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(`
-      <!DOCTYPE html>
-      <html>
-      <head><title>CivicPulse AI - Building App</title></head>
-      <body style="font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem;">
-        <h1 style="color: #38bdf8;">CivicPulse AI Server Active (Frontend)</h1>
-        <p>The static build (<code>dist/index.html</code>) is currently being generated or was not found.</p>
-        <p>Please refresh the page in a few seconds once building completes.</p>
-      </body>
-      </html>
-    `);
-    return;
   }
 
   const ext = path.extname(filePath).toLowerCase();
@@ -89,7 +118,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
+// Immediately bind to PORT so Render port scanner succeeds instantly!
 server.listen(PORT, () => {
   console.log(`CivicPulse Server running on port ${PORT}`);
-  console.log(`Serving dist from: ${DIST_DIR}`);
 });
