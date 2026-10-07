@@ -1,23 +1,41 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
 
-// Search candidate directories for Vite 'dist' output
-const candidatePaths = [
-  path.join(__dirname, 'frontend', 'dist'),
-  path.join(__dirname, 'dist'),
-  path.join(__dirname, '..', 'dist'),
-  path.join(__dirname, '..', 'frontend', 'dist'),
-  '/opt/render/project/src/frontend/dist',
-  '/opt/render/project/src/dist',
-];
+function findDistDir() {
+  const candidatePaths = [
+    path.join(__dirname, 'frontend', 'dist'),
+    path.join(__dirname, 'dist'),
+    path.join(__dirname, '..', 'dist'),
+    path.join(__dirname, '..', 'frontend', 'dist'),
+    '/opt/render/project/src/frontend/dist',
+    '/opt/render/project/src/dist',
+    '/opt/render/project/dist',
+    '/opt/render/project/frontend/dist'
+  ];
+  return candidatePaths.find(p => fs.existsSync(p) && fs.existsSync(path.join(p, 'index.html')));
+}
 
-let DIST_DIR = candidatePaths.find(p => fs.existsSync(p) && fs.existsSync(path.join(p, 'index.html')));
+let DIST_DIR = findDistDir();
 
 if (!DIST_DIR) {
-  DIST_DIR = candidatePaths.find(p => fs.existsSync(p)) || path.join(__dirname, 'frontend', 'dist');
+  console.log('Vite dist/ directory missing. Triggering auto-build...');
+  try {
+    const frontendDir = fs.existsSync(path.join(__dirname, 'frontend'))
+      ? path.join(__dirname, 'frontend')
+      : __dirname;
+    execSync('npm install && npm run build', { cwd: frontendDir, stdio: 'inherit' });
+    DIST_DIR = findDistDir();
+  } catch (buildErr) {
+    console.error('Auto-build failed:', buildErr.message);
+  }
+}
+
+if (!DIST_DIR) {
+  DIST_DIR = path.join(__dirname, 'frontend', 'dist');
 }
 
 const MIME_TYPES = {
@@ -46,14 +64,11 @@ const server = http.createServer((req, res) => {
     res.end(`
       <!DOCTYPE html>
       <html>
-      <head><title>CivicPulse AI - Deployment Diagnostics</title></head>
+      <head><title>CivicPulse AI - Building App</title></head>
       <body style="font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem;">
         <h1 style="color: #38bdf8;">CivicPulse AI Server Active</h1>
-        <p>The server is running, but static build output (<code>dist/index.html</code>) was not found.</p>
-        <h3>Checked Paths:</h3>
-        <ul>${candidatePaths.map(p => `<li>${p} - <strong>${fs.existsSync(p) ? 'EXISTS' : 'NOT FOUND'}</strong></li>`).join('')}</ul>
-        <hr/>
-        <p><strong>Fix on Render:</strong> Ensure Build Command is set to: <code>cd frontend && npm install && npm run build</code></p>
+        <p>The static build (<code>dist/index.html</code>) is currently being generated or was not found.</p>
+        <p>Please refresh the page in a few seconds once building completes.</p>
       </body>
       </html>
     `);
