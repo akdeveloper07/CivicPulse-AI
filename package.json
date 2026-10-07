@@ -1,0 +1,13 @@
+{
+  "name": "civicpulse-ai",
+  "version": "1.0.0",
+  "description": "CivicPulse AI Smart City Infrastructure Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "cd frontend && npm install && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
