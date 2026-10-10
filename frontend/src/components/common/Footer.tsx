@@ -11,13 +11,16 @@ export const Footer: React.FC = () => {
               <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white">
                 <Activity className="w-4 h-4" />
               </div>
-              <span className="text-xl font-bold text-white tracking-tight">CivicPulse AI</span>
+              <span className="text-xl font-bold text-white tracking-tight">CivicNexus AI</span>
             </div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-teal-400">
+              Connecting Citizens. Improving Communities.
+            </p>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed">
-              An Explainable AI Platform for Civic Issue Intelligence and Resolution Tracking. Empowering local government departments with transparent priority scoring, semantic duplicate detection, and root-cause discovery.
+              CivicNexus AI empowers citizens and municipal teams with citizen-first One-Tap Reporting, real-time Smart Duplicate Detection, Civic Memory AI, transparent priority scoring, and proactive root-cause discovery.
             </p>
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-3 py-1.5 rounded-full w-fit">
-              <ShieldCheck className="w-4 h-4" /> System Operational — SentenceTransformers & SQLite active
+              <ShieldCheck className="w-4 h-4" /> System Operational — Firebase & Civic Intelligence Active
             </div>
           </div>
 
@@ -45,7 +48,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-navy-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} CivicPulse AI Project Team. Academic Final Year Software Engineering Project.</p>
+          <p>© {new Date().getFullYear()} CivicNexus AI. Connecting Citizens. Improving Communities.</p>
           <p className="mt-2 sm:mt-0">Explainable AI Framework for Smart Cities</p>
         </div>
       </div>

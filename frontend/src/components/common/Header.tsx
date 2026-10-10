@@ -30,10 +30,10 @@ export const Header: React.FC = () => {
             </div>
             <div>
               <span className="text-xl font-extrabold tracking-tight text-navy-900">
-                CivicPulse <span className="text-teal-600">AI</span>
+                CivicNexus <span className="text-teal-600">AI</span>
               </span>
               <span className="block text-[10px] font-medium text-slate-500 uppercase tracking-wider">
-                Explainable Civic Intelligence
+                Connecting Citizens · Improving Communities
               </span>
             </div>
           </Link>

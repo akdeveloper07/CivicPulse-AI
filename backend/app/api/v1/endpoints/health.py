@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/health")
 def health_check():
     """Liveness probe endpoint."""
-    return {"status": "ok", "service": "CivicPulse API"}
+    return {"status": "ok", "service": "CivicNexus AI API"}
 
 
 @router.get("/ready")

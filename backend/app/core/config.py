@@ -5,7 +5,7 @@ from pydantic import Field
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "CivicPulse: Explainable AI Platform for Civic Issue Intelligence"
+    PROJECT_NAME: str = "CivicNexus AI: Civic Intelligence & Issue Resolution Platform"
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = Field(default="civicpulse-secret-key-change-in-production-32bytesmin!")
     ALGORITHM: str = "HS256"

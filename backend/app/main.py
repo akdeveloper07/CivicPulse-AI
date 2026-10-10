@@ -16,7 +16,7 @@ logger = logging.getLogger("civicpulse.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown lifespan context manager."""
-    logger.info("Starting up CivicPulse Backend Application...")
+    logger.info("Starting up CivicNexus AI Backend Application...")
     # Initialize DB tables
     Base.metadata.create_all(bind=engine)
     # Seed demo synthetic dataset
@@ -25,13 +25,13 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"Seed database warning: {e}")
     yield
-    logger.info("Shutting down CivicPulse Backend Application.")
+    logger.info("Shutting down CivicNexus AI Backend Application.")
 
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    description="Explainable AI Platform for Civic Issue Intelligence and Resolution Tracking",
+    description="CivicNexus AI: Citizen-first Civic Intelligence & Resolution Tracking Platform",
     version="1.0.0",
     lifespan=lifespan
 )
