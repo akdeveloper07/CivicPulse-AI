@@ -4,9 +4,10 @@
   "description": "CivicPulse AI Smart City Infrastructure Platform",
   "main": "server.js",
   "scripts": {
+    "postinstall": "cd frontend && npm install && npm run build",
     "prestart": "cd frontend && npm install && npm run build",
-    "start": "node server.js",
-    "build": "cd frontend && npm install && npm run build"
+    "build": "cd frontend && npm install && npm run build",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",

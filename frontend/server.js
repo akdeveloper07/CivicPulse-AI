@@ -31,11 +31,18 @@ function triggerAsyncBuild() {
   isBuilding = true;
   console.log('Vite dist/ directory missing in frontend. Triggering non-blocking background build...');
 
-  exec('npm run build', { cwd: __dirname }, (err, stdout, stderr) => {
+  const buildCmd = fs.existsSync(path.join(__dirname, 'node_modules'))
+    ? 'npm run build'
+    : 'npm install && npm run build';
+
+  console.log(`Running build command: ${buildCmd} in ${__dirname}`);
+
+  exec(buildCmd, { cwd: __dirname }, (err, stdout, stderr) => {
     isBuilding = false;
     if (err) {
       console.error('Async build failed:', err.message);
-      buildError = err.message;
+      console.error('stderr:', stderr);
+      buildError = `${err.message}${stderr ? ': ' + stderr.slice(0, 300) : ''}`;
     } else {
       console.log('Async build completed successfully!');
       DIST_DIR = findDistDir();

@@ -19,7 +19,7 @@ def run_cmd(args):
 
 run_cmd(["git", "status"])
 run_cmd(["git", "add", "-A"])
-run_cmd(["git", "commit", "-m", "Add server.js in root, frontend, and src directories for Render deployment"])
+run_cmd(["git", "commit", "-m", "Track pre-built frontend distribution and automate postinstall build to resolve Render build failure"])
 run_cmd(["git", "push"])
 
 with open(log_path, "w", encoding="utf-8") as f:

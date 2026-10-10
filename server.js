@@ -32,11 +32,18 @@ function triggerAsyncBuild() {
     ? path.join(__dirname, 'frontend')
     : __dirname;
 
-  exec('npm run build', { cwd: frontendDir }, (err, stdout, stderr) => {
+  const buildCmd = fs.existsSync(path.join(frontendDir, 'node_modules'))
+    ? 'npm run build'
+    : 'npm install && npm run build';
+
+  console.log(`Running build command: ${buildCmd} in ${frontendDir}`);
+
+  exec(buildCmd, { cwd: frontendDir }, (err, stdout, stderr) => {
     isBuilding = false;
     if (err) {
       console.error('Async build failed:', err.message);
-      buildError = err.message;
+      console.error('stderr:', stderr);
+      buildError = `${err.message}${stderr ? ': ' + stderr.slice(0, 300) : ''}`;
     } else {
       console.log('Async build completed successfully!');
       DIST_DIR = findDistDir();
