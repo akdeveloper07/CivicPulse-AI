@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Activity, Layers, ShieldCheck, Cpu, ArrowRight, CheckCircle2,
-  AlertTriangle, GitMerge, Lightbulb, TrendingUp, Sparkles, UserCheck
+  AlertTriangle, GitMerge, Lightbulb, TrendingUp, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -51,18 +51,10 @@ export const LandingPage: React.FC = () => {
                   to="/login"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold transition-all text-base"
                 >
-                  Sign In (Demo Accounts)
+                  Sign In
                 </Link>
               </>
             )}
-          </div>
-
-          {/* Quick Demo Credentials Notice */}
-          <div className="pt-6 border-t border-slate-800/80 max-w-xl mx-auto">
-            <div className="text-xs text-slate-400 flex items-center justify-center gap-2">
-              <UserCheck className="w-4 h-4 text-teal-400" />
-              <span>Demo Login Available: <b>citizen@civicpulse.org</b> or <b>admin@civicpulse.org</b> (Pass: <b>CitizenPass123!</b>)</span>
-            </div>
           </div>
         </div>
       </section>

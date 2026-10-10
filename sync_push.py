@@ -17,9 +17,17 @@ def run_cmd(args):
         out = f"=== RUN EXCEPTION: {e} ===\n\n"
     lines.append(out)
 
+import shutil
+
+dist_src = os.path.join(repo_dir, "frontend", "dist")
+dist_dst = os.path.join(repo_dir, "dist")
+if os.path.exists(dist_src):
+    shutil.copytree(dist_src, dist_dst, dirs_exist_ok=True)
+    lines.append("Copied frontend/dist to dist successfully.\n\n")
+
 run_cmd(["git", "status"])
 run_cmd(["git", "add", "-A"])
-run_cmd(["git", "commit", "-m", "Track pre-built frontend distribution and automate postinstall build to resolve Render build failure"])
+run_cmd(["git", "commit", "-m", "Remove demo accounts and Google sign-in from authentication flow"])
 run_cmd(["git", "push"])
 
 with open(log_path, "w", encoding="utf-8") as f:
