@@ -61,6 +61,28 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+  // Set CORS headers for all requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+
+  // Handle preflight OPTIONS requests immediately
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  // Handle /api routes if called on static server
+  if (req.url.startsWith('/api')) {
+    res.writeHead(503, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ 
+      detail: 'Backend API service is not hosted on this static node server. CivicPulse demo fallback active.',
+      status: 'offline'
+    }));
+    return;
+  }
+
   DIST_DIR = DIST_DIR || findDistDir();
 
   if (!DIST_DIR) {

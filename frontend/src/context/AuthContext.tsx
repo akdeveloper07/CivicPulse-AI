@@ -59,6 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('civicpulse_token');
+    localStorage.removeItem('civicpulse_current_user');
     setToken(null);
     setUser(null);
   };
