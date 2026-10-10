@@ -45,12 +45,16 @@ export const RegisterPage: React.FC = () => {
   return (
     <div className="max-w-md mx-auto my-12 px-4">
       <div className="glass-panel p-8 space-y-6 shadow-xl border border-slate-200">
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-teal-600 text-white flex items-center justify-center mx-auto shadow-md">
-            <UserPlus className="w-6 h-6" />
+        <div className="text-center space-y-3">
+          <img
+            src="/logo-icon.png"
+            alt="CivicNexus AI"
+            className="w-16 h-16 rounded-2xl object-contain bg-[#011023] p-1.5 mx-auto shadow-lg border border-teal-500/30"
+          />
+          <div>
+            <h2 className="text-2xl font-bold text-navy-900 tracking-tight">Create CivicNexus AI Account</h2>
+            <p className="text-xs text-slate-500 mt-1">Connecting Citizens · Improving Communities</p>
           </div>
-          <h2 className="text-2xl font-bold text-navy-900 tracking-tight">Create CivicPulse Account</h2>
-          <p className="text-xs text-slate-500">Register to submit citizen reports and track resolution progress</p>
         </div>
 
         {error && (

@@ -7,15 +7,21 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white">
-                <Activity className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <img
+                src="/logo-icon.png"
+                alt="CivicNexus AI"
+                className="w-10 h-10 rounded-xl object-contain bg-[#011023] shadow-md border border-navy-700 p-0.5"
+              />
+              <div>
+                <span className="text-xl font-extrabold text-white tracking-tight flex items-center gap-1.5">
+                  CivicNexus <span className="text-teal-400 text-xs font-black px-1.5 py-0.5 rounded-md bg-teal-950 border border-teal-700">AI</span>
+                </span>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-teal-400">
+                  Connecting Citizens · Improving Communities
+                </p>
               </div>
-              <span className="text-xl font-bold text-white tracking-tight">CivicNexus AI</span>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-teal-400">
-              Connecting Citizens. Improving Communities.
-            </p>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed">
               CivicNexus AI empowers citizens and municipal teams with citizen-first One-Tap Reporting, real-time Smart Duplicate Detection, Civic Memory AI, transparent priority scoring, and proactive root-cause discovery.
             </p>

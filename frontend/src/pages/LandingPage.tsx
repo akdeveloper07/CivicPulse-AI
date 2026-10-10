@@ -15,6 +15,17 @@ export const LandingPage: React.FC = () => {
       <section className="relative overflow-hidden pt-12 pb-16 bg-gradient-to-b from-slate-900 via-navy-900 to-slate-900 text-white rounded-3xl shadow-xl mx-4 sm:mx-6 lg:mx-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(13,148,136,0.25),transparent_50%)] pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 text-center space-y-8">
+          <div className="flex justify-center">
+            <div className="relative group">
+              <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-500 opacity-40 blur-xl group-hover:opacity-75 transition duration-500" />
+              <img
+                src="/logo-icon.png"
+                alt="CivicNexus AI Emblem"
+                className="relative w-28 h-28 sm:w-36 sm:h-36 object-contain rounded-2xl bg-[#011023] p-2 shadow-2xl border border-teal-500/40 hover:scale-105 transition-transform"
+              />
+            </div>
+          </div>
+
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-teal-400" />
             CivicNexus AI · Next-Generation Civic Intelligence

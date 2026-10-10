@@ -25,12 +25,14 @@ export const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-navy-900 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
-              <Activity className="w-5 h-5 animate-pulse" />
-            </div>
+            <img
+              src="/logo-icon.png"
+              alt="CivicNexus AI"
+              className="w-10 h-10 rounded-xl object-contain bg-[#011023] shadow-md group-hover:scale-105 transition-all p-0.5 border border-slate-200"
+            />
             <div>
-              <span className="text-xl font-extrabold tracking-tight text-navy-900">
-                CivicNexus <span className="text-teal-600">AI</span>
+              <span className="text-xl font-extrabold tracking-tight text-navy-900 flex items-center gap-1.5">
+                CivicNexus <span className="text-teal-600 text-sm font-black px-1.5 py-0.5 rounded-md bg-teal-50 border border-teal-200">AI</span>
               </span>
               <span className="block text-[10px] font-medium text-slate-500 uppercase tracking-wider">
                 Connecting Citizens · Improving Communities
