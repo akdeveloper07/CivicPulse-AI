@@ -74,6 +74,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
   return <>{children}</>;
 };
 
+import { RoleAccessGate } from './components/common/RoleAccessGate';
+
 export const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -91,12 +93,58 @@ export const App: React.FC = () => {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/gis-heatmap" element={<GISHeatmapPage />} />
 
-              {/* 15 Flagship Municipal Feature Routes */}
+              {/* 15 Flagship Municipal Feature Routes with RBAC Enforcement */}
               <Route path="/departments" element={<DepartmentDirectoryPage />} />
               <Route path="/whatsapp-bot" element={<WhatsAppBotSimulatorPage />} />
-              <Route path="/flood-desk" element={<MonsoonFloodDeskPage />} />
-              <Route path="/tenders" element={<WardTenderContractorPage />} />
-              <Route path="/road-scanner" element={<AIRoadDefectScannerPage />} />
+
+              {/* Restricted: Officer Only */}
+              <Route
+                path="/flood-desk"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['department_officer']}
+                    featureName="Monsoon Flood & Stormwater Drain Desk (#2)"
+                    departmentName="Greater Chennai Corporation — Stormwater Drainage (SWD) Wing"
+                    featureCode="SWD-02"
+                    reason="SCADA dewatering pump controls, flood sensor telemetry, and relief camp logistics are restricted to designated Assistant Engineers and Nodal Officers under GCC Disaster Management Bylaws."
+                  >
+                    <MonsoonFloodDeskPage />
+                  </RoleAccessGate>
+                }
+              />
+
+              {/* Restricted: Contractor Only */}
+              <Route
+                path="/tenders"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['contractor']}
+                    featureName="Ward Tenders & Defect Liability Tracker (#3)"
+                    departmentName="GCC Works Department & Infrastructure Wing"
+                    featureCode="WORKS-03"
+                    reason="Public infrastructure contract bidding, milestone billing, and defect liability retention funds are strictly restricted to verified municipal engineering contractors."
+                  >
+                    <WardTenderContractorPage />
+                  </RoleAccessGate>
+                }
+              />
+
+              {/* Restricted: Contractor & Officer */}
+              <Route
+                path="/road-scanner"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['contractor', 'department_officer']}
+                    featureName="AI Road Defect Scanner & Roughness Index (#4)"
+                    departmentName="Highways Department & GCC Bus Route Roads Wing"
+                    featureCode="HW-04"
+                    reason="Automated road surface International Roughness Index (IRI) calculation and asphalt milling dispatch require certified field engineer credentials."
+                  >
+                    <AIRoadDefectScannerPage />
+                  </RoleAccessGate>
+                }
+              />
+
               <Route path="/night-safety" element={<NightSafetyRadarPage />} />
               <Route path="/water-tanker" element={<DialATankerRadarPage />} />
               <Route path="/ward-sabha" element={<DigitalWardSabhaPage />} />
@@ -104,10 +152,26 @@ export const App: React.FC = () => {
               <Route path="/animal-rescue" element={<StrayAnimalRescuePage />} />
               <Route path="/noise-monitor" element={<StreetNoiseMonitorPage />} />
               <Route path="/tree-guardian" element={<UrbanTreeGuardianPage />} />
-              <Route path="/power-grid" element={<PowerSubstationRadarPage />} />
+
+              {/* Restricted: Officer Only */}
+              <Route
+                path="/power-grid"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['department_officer']}
+                    featureName="Substation Feeder & Transformer SCADA Radar (#12)"
+                    departmentName="TANGEDCO — Electrical Grid Distribution Circle"
+                    featureCode="TNEB-12"
+                    reason="High-voltage substation feeder trip diagnostics, transformer load telemetry, and emergency shutdown switches are strictly restricted to licensed electrical engineers."
+                  >
+                    <PowerSubstationRadarPage />
+                  </RoleAccessGate>
+                }
+              />
+
               <Route path="/emergency-sos" element={<EmergencyHazardDeskPage />} />
 
-              {/* 21 Civic Solutions Existing Routes */}
+              {/* 21 Civic Features Routes */}
               <Route path="/nearby-map" element={<NearbyProblemsMapPage />} />
               <Route path="/voice-assistant" element={<TamilVoiceAssistantPage />} />
               <Route path="/repair-proof" element={<RepairProofPage />} />
@@ -119,8 +183,39 @@ export const App: React.FC = () => {
               <Route path="/community" element={<CommunityActionPage />} />
               <Route path="/offline-reports" element={<OfflineReportingPage />} />
               <Route path="/escalations" element={<OverdueEscalationPage />} />
-              <Route path="/simulator" element={<CivicSimulatorPage />} />
-              <Route path="/knowledge-graph" element={<CivicKnowledgeGraphPage />} />
+
+              {/* Restricted: Officer / Planner Only */}
+              <Route
+                path="/simulator"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['department_officer']}
+                    featureName="Civic What-If Infrastructure Simulator (#18)"
+                    departmentName="Municipal Urban Planning & Finance Cell"
+                    featureCode="SIM-18"
+                    reason="Capital budget reallocation modeling and systemic infrastructure intervention simulation are restricted to municipal planning officers."
+                  >
+                    <CivicSimulatorPage />
+                  </RoleAccessGate>
+                }
+              />
+
+              {/* Restricted: Officer / Analyst Only */}
+              <Route
+                path="/knowledge-graph"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['department_officer']}
+                    featureName="Civic Knowledge Graph & Recurrence Network (#20)"
+                    departmentName="Smart City IT & Urban Data Analytics Cell"
+                    featureCode="GRAPH-20"
+                    reason="Deep systemic failure correlation graphs linking contractors, recurring geographic defects, and department performance are restricted to municipal analysts."
+                  >
+                    <CivicKnowledgeGraphPage />
+                  </RoleAccessGate>
+                }
+              />
+
               <Route path="/impact-scorecard" element={<CivicImpactAnalyticsPage />} />
 
               {/* Citizen Routes */}
@@ -157,93 +252,152 @@ export const App: React.FC = () => {
                 }
               />
 
-              {/* Municipal Admin Intelligence Routes */}
+              {/* Municipal Admin & Officer Intelligence Routes */}
               <Route
                 path="/field-dispatch"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['contractor', 'department_officer']}
+                    featureName="Field Crew Route Optimizer & Dispatch Desk"
+                    departmentName="GCC Works & Field Operations Center"
+                    featureCode="DISPATCH-01"
+                    reason="Field crew real-time dispatching and route optimization tools are restricted to field contractors and dispatch supervisors."
+                  >
                     <FieldDispatchPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/sla-risk"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer']}
+                    featureName="SLA Breach Risk & Urgency Matrix"
+                    departmentName="Integrated Municipal Command Center"
+                    featureCode="RISK-02"
+                    reason="Dynamic priority radar scoring and automated breach mitigation are restricted to municipal departmental officers."
+                  >
                     <SLARiskPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/executive-report"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['administrator']}
+                    featureName="Executive ESG & Municipal Performance Report"
+                    departmentName="Chief Minister Grievance & GCC Leadership"
+                    featureCode="ESG-01"
+                    reason="Executive mayoral briefs, budget audits, and contractor penalty assessments are restricted to Zonal Commissioners and System Administrators."
+                  >
                     <ExecutiveReportPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/dashboard"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="Municipal Command & Operations Dashboard"
+                    departmentName="Municipal Administration"
+                    featureCode="ADMIN-01"
+                    reason="Citywide operational command and triaging console is restricted to departmental officers and administrators."
+                  >
                     <AdminDashboard />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/match-review"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="AI Duplicate Match Review Queue"
+                    departmentName="GCC Grievance Cell"
+                    featureCode="AI-MATCH"
+                  >
                     <AIMatchReviewPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/clusters"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="Civic Memory Cluster Manager"
+                    departmentName="Urban Analytics Wing"
+                    featureCode="AI-CLUSTER"
+                  >
                     <ClusterManagementPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/root-causes"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="Root-Cause Discovery Engine"
+                    departmentName="Municipal Engineering Division"
+                    featureCode="AI-ROOT"
+                  >
                     <RootCauseDiscoveryPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/recommendations"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="Resolution Recommendation System"
+                    departmentName="Municipal Engineering Division"
+                    featureCode="AI-REC"
+                  >
                     <ResolutionRecommendationsPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/forecasting"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['administrator']}
+                    featureName="Civic Volume & Incident Forecasting"
+                    departmentName="Smart City Planning Directorate"
+                    featureCode="AI-FORECAST"
+                  >
                     <ForecastingPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/confidence-fairness"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['administrator']}
+                    featureName="Algorithmic Confidence & Ward Fairness Audit"
+                    departmentName="Civic AI Ethics Committee"
+                    featureCode="AI-ETHICS"
+                  >
                     <ConfidenceFairnessPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
               <Route
                 path="/admin/system"
                 element={
-                  <ProtectedRoute adminOnly>
+                  <RoleAccessGate
+                    allowedRoles={['administrator', 'system_admin']}
+                    featureName="System Administration & Security Console"
+                    departmentName="Directorate of e-Governance"
+                    featureCode="SYS-ADMIN"
+                  >
                     <SystemAdminPage />
-                  </ProtectedRoute>
+                  </RoleAccessGate>
                 }
               />
             </Routes>

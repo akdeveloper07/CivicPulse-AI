@@ -8,7 +8,7 @@ import {
   Sparkles, MapPin, Mic, Navigation, Bell, AlertOctagon, Accessibility,
   HelpCircle, Users, WifiOff, FileCheck, Network, BarChart3, ChevronDown,
   Eye, Sliders, Building2, Droplets, Waves, Hammer, Moon, Vote, Award,
-  Heart, Volume2, Trees, Zap, Siren, MessageSquare, Camera
+  Heart, Volume2, Trees, Zap, Siren, MessageSquare, Camera, Lock
 } from 'lucide-react';
 
 const ROLE_LABELS: Record<UserRole, { label: string; badge: string; color: string }> = {
@@ -72,6 +72,7 @@ export const Header: React.FC = () => {
   }, []);
 
   const activeRoleConfig = user ? ROLE_LABELS[user.role] || ROLE_LABELS.citizen : null;
+  const isPermitted = (roles: UserRole[]) => (user ? roles.includes(user.role) || isAdmin : true);
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -198,7 +199,13 @@ export const Header: React.FC = () => {
                             <Camera className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                             <span>Road Scanner (#4)</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">Contractor</span>
+                          {isPermitted(['contractor', 'department_officer']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">Contractor</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 shrink-0 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Contractor
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -207,7 +214,13 @@ export const Header: React.FC = () => {
                             <FileText className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                             <span>Ward Tenders (#3)</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">Contractor</span>
+                          {isPermitted(['contractor']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">Contractor</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 shrink-0 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Contractor
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -216,7 +229,13 @@ export const Header: React.FC = () => {
                             <Zap className="w-3.5 h-3.5 text-yellow-600 shrink-0" />
                             <span>Power Grid (#12)</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 shrink-0">Officer</span>
+                          {isPermitted(['department_officer']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 shrink-0">Officer</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 shrink-0 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Officer
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -244,7 +263,13 @@ export const Header: React.FC = () => {
                             <Waves className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
                             <span>Flood Desk (#2)</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 shrink-0">Officer</span>
+                          {isPermitted(['department_officer']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 shrink-0">Officer</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 shrink-0 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Officer
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -462,7 +487,13 @@ export const Header: React.FC = () => {
                             <GitMerge className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                             <span>#6 Civic Memory</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          {isPermitted(['department_officer', 'administrator']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Admin
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -471,7 +502,13 @@ export const Header: React.FC = () => {
                             <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                             <span>#7 Risk Radar</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">Officer</span>
+                          {isPermitted(['department_officer', 'administrator']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">Officer</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Officer
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -480,7 +517,13 @@ export const Header: React.FC = () => {
                             <Lightbulb className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                             <span>#8 RootCause AI</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          {isPermitted(['department_officer', 'administrator']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Admin
+                            </span>
+                          )}
                         </Link>
                       </li>
                       <li>
@@ -489,7 +532,13 @@ export const Header: React.FC = () => {
                             <Sliders className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                             <span>#18 What-If Sim</span>
                           </div>
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          {isPermitted(['department_officer', 'administrator']) ? (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Admin</span>
+                          ) : (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> Admin
+                            </span>
+                          )}
                         </Link>
                       </li>
                     </ul>

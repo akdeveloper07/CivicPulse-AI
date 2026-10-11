@@ -8,8 +8,10 @@ import {
   Plus, Search, Filter, Calendar, MapPin, ArrowRight, Activity, Clock,
   Sparkles, ShieldCheck, Camera, Navigation, AlertTriangle, Layers, Award,
   Compass, Mic, Users, HelpCircle, CheckCircle, Building2, Droplets, Waves,
-  Hammer, Moon, Vote, Heart, Volume2, Trees, Zap, Siren, MessageSquare
+  Hammer, Moon, Vote, Heart, Volume2, Trees, Zap, Siren, MessageSquare,
+  Lock, ShieldAlert
 } from 'lucide-react';
+import { UserRole } from '../types';
 
 export const CitizenDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -22,6 +24,7 @@ export const CitizenDashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'mine' | 'critical' | 'resolved'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [onlyCitizenFeatures, setOnlyCitizenFeatures] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -231,237 +234,282 @@ export const CitizenDashboard: React.FC = () => {
       )}
 
       {/* 15 Flagship Municipal Services Hub */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse" />
-            <h3 className="text-base font-extrabold text-navy-900 tracking-tight">
-              15 Municipal Flagship Civic Services
-            </h3>
-            <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-              Department Transparency & Telemetry
-            </span>
+      {(() => {
+        const FLAGSHIP_SERVICES = [
+          {
+            id: 1,
+            name: 'WhatsApp Bot (#1)',
+            subtitle: 'Multilingual Chat Desk',
+            link: '/whatsapp-bot',
+            deptCode: 'GCC IT',
+            roleBadgeText: 'Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'contractor', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: MessageSquare,
+            iconBg: 'bg-emerald-50 text-emerald-600',
+            deptTag: 'text-emerald-700 bg-emerald-50',
+          },
+          {
+            id: 2,
+            name: 'Flood Desk (#2)',
+            subtitle: 'Pumps & Relief Shelters',
+            link: '/flood-desk',
+            deptCode: 'SWD Dept',
+            roleBadgeText: 'Officer Only',
+            allowedRoles: ['department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Waves,
+            iconBg: 'bg-cyan-50 text-cyan-600',
+            deptTag: 'text-cyan-700 bg-cyan-50',
+          },
+          {
+            id: 3,
+            name: 'Ward Tenders (#3)',
+            subtitle: 'Defect Liability Claims',
+            link: '/tenders',
+            deptCode: 'GCC Works',
+            roleBadgeText: 'Contractor Only',
+            allowedRoles: ['contractor', 'administrator', 'system_admin'] as UserRole[],
+            icon: Hammer,
+            iconBg: 'bg-amber-50 text-amber-600',
+            deptTag: 'text-amber-700 bg-amber-50',
+          },
+          {
+            id: 4,
+            name: 'Road Scanner (#4)',
+            subtitle: 'AI Pothole Detection',
+            link: '/road-scanner',
+            deptCode: 'Highways',
+            roleBadgeText: 'Contractor Only',
+            allowedRoles: ['contractor', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Camera,
+            iconBg: 'bg-indigo-50 text-indigo-600',
+            deptTag: 'text-indigo-700 bg-indigo-50',
+          },
+          {
+            id: 5,
+            name: 'Night Safety (#5)',
+            subtitle: 'Illumination & Patrols',
+            link: '/night-safety',
+            deptCode: 'GCTP Police',
+            roleBadgeText: 'Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Moon,
+            iconBg: 'bg-purple-50 text-purple-600',
+            deptTag: 'text-purple-700 bg-purple-50',
+          },
+          {
+            id: 6,
+            name: 'Dial-a-Tanker (#6)',
+            subtitle: 'GPS & Potability Lab',
+            link: '/water-tanker',
+            deptCode: 'CMWSSB',
+            roleBadgeText: 'Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'contractor', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Droplets,
+            iconBg: 'bg-blue-50 text-blue-600',
+            deptTag: 'text-blue-700 bg-blue-50',
+          },
+          {
+            id: 7,
+            name: 'Ward Sabha (#7)',
+            subtitle: 'Citizen Budget Voting',
+            link: '/ward-sabha',
+            deptCode: 'Ward Council',
+            roleBadgeText: 'Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Vote,
+            iconBg: 'bg-emerald-50 text-emerald-600',
+            deptTag: 'text-emerald-700 bg-emerald-50',
+          },
+          {
+            id: 8,
+            name: 'Civic Pass (#8)',
+            subtitle: 'Tax Rebates & Rewards',
+            link: '/civic-pass',
+            deptCode: 'Karma Pass',
+            roleBadgeText: 'Volunteer & Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Award,
+            iconBg: 'bg-amber-50 text-amber-600',
+            deptTag: 'text-amber-700 bg-amber-50',
+          },
+          {
+            id: 9,
+            name: 'Animal Rescue (#9)',
+            subtitle: '24/7 Veterinary Van',
+            link: '/animal-rescue',
+            deptCode: 'Health Wing',
+            roleBadgeText: 'Volunteer & Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Heart,
+            iconBg: 'bg-rose-50 text-rose-600',
+            deptTag: 'text-rose-700 bg-rose-50',
+          },
+          {
+            id: 10,
+            name: 'Noise Monitor (#10)',
+            subtitle: 'Acoustic Decibel Radar',
+            link: '/noise-monitor',
+            deptCode: 'TNPCB',
+            roleBadgeText: 'Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Volume2,
+            iconBg: 'bg-indigo-50 text-indigo-600',
+            deptTag: 'text-indigo-700 bg-indigo-50',
+          },
+          {
+            id: 11,
+            name: 'Tree Guardian (#11)',
+            subtitle: 'Ward Canopy & Saplings',
+            link: '/tree-guardian',
+            deptCode: 'Parks Dept',
+            roleBadgeText: 'Volunteer & Citizen',
+            allowedRoles: ['citizen', 'volunteer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Trees,
+            iconBg: 'bg-emerald-50 text-emerald-600',
+            deptTag: 'text-emerald-700 bg-emerald-50',
+          },
+          {
+            id: 12,
+            name: 'Power Grid (#12)',
+            subtitle: 'Substation SCADA Breakers',
+            link: '/power-grid',
+            deptCode: 'TANGEDCO',
+            roleBadgeText: 'Officer Only',
+            allowedRoles: ['department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Zap,
+            iconBg: 'bg-amber-50 text-amber-600',
+            deptTag: 'text-amber-700 bg-amber-50',
+          },
+          {
+            id: 13,
+            name: 'Emergency SOS (#13)',
+            subtitle: 'Multi-Agency First Alarm',
+            link: '/emergency-sos',
+            deptCode: '1070 SOS',
+            roleBadgeText: 'All Users',
+            allowedRoles: ['citizen', 'volunteer', 'contractor', 'department_officer', 'administrator', 'system_admin'] as UserRole[],
+            icon: Siren,
+            iconBg: 'bg-rose-50 text-rose-600',
+            deptTag: 'text-rose-700 bg-rose-50',
+          },
+        ];
+
+        const userRole = user?.role || 'citizen';
+        const citizenServices = FLAGSHIP_SERVICES.filter((s) => s.allowedRoles.includes(userRole));
+        const displayedServices = onlyCitizenFeatures ? citizenServices : FLAGSHIP_SERVICES;
+
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse" />
+                <h3 className="text-base font-extrabold text-navy-900 tracking-tight">
+                  15 Municipal Flagship Civic Services
+                </h3>
+                <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                  {citizenServices.length} Authorized for Your Role
+                </span>
+              </div>
+              <Link
+                to="/departments"
+                className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
+              >
+                All 8 Municipal Departments <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Role Protection Banner & View Toggle */}
+            <div className="p-3.5 rounded-2xl bg-teal-50/80 border border-teal-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-teal-700 shrink-0" />
+                <span className="text-teal-950 font-medium">
+                  <strong>Role Isolation Active:</strong> Logged in as <strong className="text-teal-900 capitalize">{userRole}</strong>. Non-citizen features (contractor tenders, flood pumps, substation grids) are restricted.
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setOnlyCitizenFeatures(true)}
+                  className={`px-3 py-1 rounded-lg font-bold text-xs transition-all ${
+                    onlyCitizenFeatures
+                      ? 'bg-teal-700 text-white shadow-xs'
+                      : 'bg-white text-teal-800 border border-teal-200 hover:bg-teal-100/50'
+                  }`}
+                >
+                  My Features Only ({citizenServices.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOnlyCitizenFeatures(false)}
+                  className={`px-3 py-1 rounded-lg font-bold text-xs transition-all ${
+                    !onlyCitizenFeatures
+                      ? 'bg-navy-900 text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  All 15 Services (Transparency)
+                </button>
+              </div>
+            </div>
+
+            {/* Services Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+              {displayedServices.map((svc) => {
+                const Icon = svc.icon;
+                const isPermitted = svc.allowedRoles.includes(userRole);
+
+                return (
+                  <Link
+                    key={svc.id}
+                    to={svc.link}
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-2.5 relative group ${
+                      isPermitted
+                        ? 'bg-white border-slate-200 hover:border-teal-500 hover:shadow-md'
+                        : 'bg-slate-50/70 border-slate-200 hover:border-rose-300 opacity-80 hover:opacity-100'
+                    }`}
+                  >
+                    {!isPermitted && (
+                      <div className="absolute top-2.5 right-2.5">
+                        <span className="p-1 rounded-md bg-rose-100 text-rose-700 inline-flex items-center justify-center shadow-2xs" title="Restricted to authorized role">
+                          <Lock className="w-3 h-3" />
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform ${svc.iconBg}`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${svc.deptTag}`}>
+                        {svc.deptCode}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="text-xs font-bold text-navy-900 flex items-center gap-1">
+                        <span>{svc.name}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500">{svc.subtitle}</div>
+
+                      <div className="mt-1.5">
+                        {isPermitted ? (
+                          <span className="text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
+                            Role: {svc.roleBadgeText}
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded inline-flex items-center gap-0.5">
+                            <Lock className="w-2.5 h-2.5" /> {svc.roleBadgeText}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-          <Link
-            to="/departments"
-            className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
-          >
-            All 8 Municipal Departments <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
-          <Link
-            to="/whatsapp-bot"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <MessageSquare className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                GCC IT
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">WhatsApp Bot (#1)</div>
-              <div className="text-[10px] text-slate-500">Multilingual Chat Desk</div>
-              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/flood-desk"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-cyan-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Waves className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-cyan-700 bg-cyan-50 px-1.5 py-0.5 rounded">
-                SWD Dept
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Flood Desk (#2)</div>
-              <div className="text-[10px] text-slate-500">Pumps & Relief Shelters</div>
-              <div className="mt-1 text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Officer
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/tenders"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Hammer className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
-                GCC Works
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Ward Tenders (#3)</div>
-              <div className="text-[10px] text-slate-500">Defect Liability Claims</div>
-              <div className="mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Contractor
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/road-scanner"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Camera className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
-                Highways
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Road Scanner (#4)</div>
-              <div className="text-[10px] text-slate-500">AI Pothole Detection</div>
-              <div className="mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Contractor
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/night-safety"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-purple-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Moon className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">
-                GCTP Police
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Night Safety (#5)</div>
-              <div className="text-[10px] text-slate-500">Illumination & Patrols</div>
-              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/water-tanker"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Droplets className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
-                CMWSSB
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Dial-a-Tanker (#6)</div>
-              <div className="text-[10px] text-slate-500">GPS & Potability Lab</div>
-              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/ward-sabha"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Vote className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                Ward Council
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Ward Sabha (#7)</div>
-              <div className="text-[10px] text-slate-500">Citizen Budget Voting</div>
-              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/civic-pass"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Award className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
-                Karma Pass
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Civic Pass (#8)</div>
-              <div className="text-[10px] text-slate-500">Tax Rebates & Rewards</div>
-              <div className="mt-1 text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Volunteer & Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/animal-rescue"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-rose-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Heart className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded">
-                Health Wing
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Animal Rescue (#9)</div>
-              <div className="text-[10px] text-slate-500">24/7 Veterinary Van</div>
-              <div className="mt-1 text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded inline-block">
-                Role: Volunteer & Citizen
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/emergency-sos"
-            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-rose-600 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-red-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Siren className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] font-black uppercase text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded">
-                1070 SOS
-              </span>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-navy-900">Emergency SOS (#13)</div>
-              <div className="text-[10px] text-slate-500">Multi-Agency First Alarm</div>
-              <div className="mt-1 text-[9px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded inline-block">
-                Role: All Users
-              </div>
-            </div>
-          </Link>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* Civic Memory AI Insights Section */}
       {recurrenceAlerts.length > 0 && (
