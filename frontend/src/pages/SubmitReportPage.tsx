@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
+import { realTimeService } from '../services/realtime';
 import { IssueCategory, CandidateMatch } from '../types';
 import { Modal } from '../components/common/Modal';
 import {
@@ -10,14 +11,16 @@ import {
 
 export const SubmitReportPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const prefill = (location.state as any) || {};
 
   const [categories, setCategories] = useState<IssueCategory[]>([]);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState(prefill.prefillTitle || '');
+  const [description, setDescription] = useState(prefill.prefillDescription || '');
   const [categoryId, setCategoryId] = useState('');
   const [impact, setImpact] = useState(5);
-  const [urgency, setUrgency] = useState(5);
-  const [approximateArea, setApproximateArea] = useState('');
+  const [urgency, setUrgency] = useState(prefill.urgency || 5);
+  const [approximateArea, setApproximateArea] = useState(prefill.location || '');
 
   // Geolocation state
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -40,9 +43,20 @@ export const SubmitReportPage: React.FC = () => {
   useEffect(() => {
     api.getCategories().then((cats) => {
       setCategories(cats);
-      if (cats.length > 0) setCategoryId(cats[0].id);
+      if (prefill.prefillCategory) {
+        const matched = cats.find(
+          (c) =>
+            c.name.toLowerCase().includes(prefill.prefillCategory.toLowerCase()) ||
+            prefill.prefillCategory.toLowerCase().includes(c.name.toLowerCase())
+        );
+        if (matched) {
+          setCategoryId(matched.id);
+          return;
+        }
+      }
+      if (cats.length > 0 && !categoryId) setCategoryId(cats[0].id);
     });
-  }, []);
+  }, [prefill.prefillCategory]);
 
   // One-Tap Geolocation Handler
   const handleDetectLocation = () => {
@@ -152,6 +166,20 @@ export const SubmitReportPage: React.FC = () => {
         longitude: longitude || undefined,
         image_url: imagePreview || undefined
       });
+
+      // Broadcast real-time civic incident event across application
+      realTimeService.broadcast({
+        id: `evt-user-${Date.now()}`,
+        timestamp: 'Just now',
+        type: 'NEW_REPORT',
+        title: title,
+        description: description || 'New civic grievance submitted with GPS coordinates.',
+        ward: approximateArea || 'Ward 104 (Zone VII)',
+        department: 'GCC Works & Public Infrastructure',
+        status: 'Dispatched to Crew',
+        urgency: urgency >= 8 ? 'critical' : urgency >= 5 ? 'high' : 'medium',
+      });
+
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to submit report.');

@@ -20,8 +20,12 @@ interface AuthContextType {
   login: (credentials: { email: string; password: string }) => Promise<void>;
   loginWithGoogle: (data?: { email?: string; name?: string; picture?: string }) => Promise<void>;
   register: (data: { name: string; email: string; password: string; role?: string }) => Promise<void>;
+  loginAsDemoRole: (role: UserRole) => void;
   logout: () => Promise<void>;
   isCitizen: boolean;
+  isVolunteer: boolean;
+  isContractor: boolean;
+  isDeptOfficer: boolean;
   isAdmin: boolean;
   isSysAdmin: boolean;
 }
@@ -242,7 +246,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginAsDemoRole = (role: UserRole) => {
+    const roleProfiles: Record<UserRole, { name: string; email: string }> = {
+      citizen: { name: 'Kavitha Ramachandran', email: 'citizen@civicpulse.org' },
+      volunteer: { name: 'Senthil Kumar (Ward Champion)', email: 'volunteer@civicpulse.org' },
+      contractor: { name: 'Apex Infra Road Crew #4', email: 'contractor@civicpulse.org' },
+      department_officer: { name: 'Er. Sundararajan (CMWSSB AE)', email: 'officer@civicpulse.org' },
+      administrator: { name: 'Zonal Joint Commissioner', email: 'admin@civicpulse.org' },
+      system_admin: { name: 'System Root Administrator', email: 'sysadmin@civicpulse.org' },
+    };
+
+    const profile = roleProfiles[role] || roleProfiles.citizen;
+    const demoUser: User = {
+      id: `demo-${role}-${Date.now()}`,
+      name: profile.name,
+      email: profile.email,
+      role: role,
+      is_active: true,
+      created_at: new Date().toISOString(),
+    };
+
+    const demoToken = `demo-token-${role}-${Date.now()}`;
+    localStorage.setItem('civicpulse_token', demoToken);
+    localStorage.setItem('civicpulse_current_user', JSON.stringify(demoUser));
+    localStorage.setItem(`civicpulse_role_${demoUser.id}`, role);
+    setToken(demoToken);
+    setUser(demoUser);
+  };
+
   const isCitizen = user?.role === 'citizen';
+  const isVolunteer = user?.role === 'volunteer';
+  const isContractor = user?.role === 'contractor';
+  const isDeptOfficer = user?.role === 'department_officer';
   const isAdmin = user?.role === 'administrator' || user?.role === 'system_admin';
   const isSysAdmin = user?.role === 'system_admin';
 
@@ -256,8 +291,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         loginWithGoogle,
         register,
+        loginAsDemoRole,
         logout,
         isCitizen,
+        isVolunteer,
+        isContractor,
+        isDeptOfficer,
         isAdmin,
         isSysAdmin,
       }}

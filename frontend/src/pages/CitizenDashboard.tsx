@@ -7,7 +7,8 @@ import { StatusBadge } from '../components/common/Badge';
 import {
   Plus, Search, Filter, Calendar, MapPin, ArrowRight, Activity, Clock,
   Sparkles, ShieldCheck, Camera, Navigation, AlertTriangle, Layers, Award,
-  Compass, Mic, Users, HelpCircle, CheckCircle
+  Compass, Mic, Users, HelpCircle, CheckCircle, Building2, Droplets, Waves,
+  Hammer, Moon, Vote, Heart, Volume2, Trees, Zap, Siren, MessageSquare
 } from 'lucide-react';
 
 export const CitizenDashboard: React.FC = () => {
@@ -147,99 +148,316 @@ export const CitizenDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* 21 Civic Solutions Quick Access Deck */}
-      <div className="space-y-3">
+      {/* Role-Specific Workspace Banner */}
+      {user && (
+        <div className="p-5 rounded-3xl bg-slate-900 border border-teal-500/30 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center font-black text-sm uppercase">
+              {user.role === 'citizen' ? 'CIT' : user.role === 'volunteer' ? 'VOL' : user.role === 'contractor' ? 'CTR' : user.role === 'department_officer' ? 'OFC' : 'ADM'}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-teal-400">
+                  {user.role.replace('_', ' ')} Workspace
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-teal-400/20 text-teal-300 border border-teal-400/30">
+                  RBAC Active
+                </span>
+              </div>
+              <div className="text-base font-bold text-white">{user.name}</div>
+              <div className="text-xs text-slate-400">
+                {user.role === 'citizen' && 'Access to one-tap reporting, neighborhood tracking, WhatsApp Bot, and Civic Pass.'}
+                {user.role === 'volunteer' && 'Authorized for tree canopy adoption, community cleanup mobilization, and verified RepairProof audits.'}
+                {user.role === 'contractor' && 'Authorized for municipal tender defect liability, pothole AI scans, and repair photographic evidence submission.'}
+                {user.role === 'department_officer' && 'Authorized for nodal grievance triage, SCADA substation grid, and flood pump telemetry command.'}
+                {user.role === 'administrator' && 'Full executive access to SLA risk forecasting, GIS heatmap, and cross-department benchmarks.'}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {user.role === 'citizen' && (
+              <>
+                <Link to="/whatsapp-bot" className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5">
+                  <MessageSquare className="w-3.5 h-3.5" /> WhatsApp Bot
+                </Link>
+                <Link to="/civic-pass" className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all">
+                  Civic Pass & Karma
+                </Link>
+              </>
+            )}
+            {user.role === 'volunteer' && (
+              <>
+                <Link to="/tree-guardian" className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5">
+                  <Trees className="w-3.5 h-3.5" /> Tree Guardian
+                </Link>
+                <Link to="/community" className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all">
+                  Community Action
+                </Link>
+              </>
+            )}
+            {user.role === 'contractor' && (
+              <>
+                <Link to="/road-scanner" className="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5" /> AI Road Scanner
+                </Link>
+                <Link to="/tenders" className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all">
+                  Ward Tenders
+                </Link>
+              </>
+            )}
+            {user.role === 'department_officer' && (
+              <>
+                <Link to="/departments" className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5" /> Dept Directory
+                </Link>
+                <Link to="/power-grid" className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all">
+                  Power Grid SCADA
+                </Link>
+              </>
+            )}
+            {user.role === 'administrator' && (
+              <>
+                <Link to="/admin/dashboard" className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5" /> Admin Console
+                </Link>
+                <Link to="/sla-risk" className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all">
+                  SLA Breach Radar
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 15 Flagship Municipal Services Hub */}
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-            <h3 className="text-sm font-bold text-navy-900 uppercase tracking-wider">
-              Smart Civic Tools · Citizen Actions
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse" />
+            <h3 className="text-base font-extrabold text-navy-900 tracking-tight">
+              15 Municipal Flagship Civic Services
             </h3>
+            <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+              Department Transparency & Telemetry
+            </span>
           </div>
           <Link
-            to="/all-solutions"
+            to="/departments"
             className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
           >
-            Explore All 21 Solutions <ArrowRight className="w-3.5 h-3.5" />
+            All 8 Municipal Departments <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
           <Link
-            to="/nearby-map"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/whatsapp-bot"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Compass className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <MessageSquare className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                GCC IT
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">Nearby Radar</div>
-              <div className="text-[10px] text-slate-500">1-Click Support</div>
+              <div className="text-xs font-bold text-navy-900">WhatsApp Bot (#1)</div>
+              <div className="text-[10px] text-slate-500">Multilingual Chat Desk</div>
+              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Citizen
+              </div>
             </div>
           </Link>
 
           <Link
-            to="/voice-assistant"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/flood-desk"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-cyan-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Mic className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Waves className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-cyan-700 bg-cyan-50 px-1.5 py-0.5 rounded">
+                SWD Dept
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">Tamil Voice</div>
-              <div className="text-[10px] text-slate-500">வணக்கம் Assistant</div>
+              <div className="text-xs font-bold text-navy-900">Flood Desk (#2)</div>
+              <div className="text-[10px] text-slate-500">Pumps & Relief Shelters</div>
+              <div className="mt-1 text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Officer
+              </div>
             </div>
           </Link>
 
           <Link
-            to="/repair-proof"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/tenders"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <CheckCircle className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Hammer className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                GCC Works
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">RepairProof</div>
-              <div className="text-[10px] text-slate-500">Before / After Slider</div>
+              <div className="text-xs font-bold text-navy-900">Ward Tenders (#3)</div>
+              <div className="text-[10px] text-slate-500">Defect Liability Claims</div>
+              <div className="mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Contractor
+              </div>
             </div>
           </Link>
 
           <Link
-            to="/safe-route"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/road-scanner"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Navigation className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Camera className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
+                Highways
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">SafeRoute</div>
-              <div className="text-[10px] text-slate-500">Hazard Avoidance</div>
+              <div className="text-xs font-bold text-navy-900">Road Scanner (#4)</div>
+              <div className="text-[10px] text-slate-500">AI Pothole Detection</div>
+              <div className="mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Contractor
+              </div>
             </div>
           </Link>
 
           <Link
-            to="/community"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/night-safety"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-purple-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Users className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Moon className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">
+                GCTP Police
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">Community Hub</div>
-              <div className="text-[10px] text-slate-500">Karma Rewards</div>
+              <div className="text-xs font-bold text-navy-900">Night Safety (#5)</div>
+              <div className="text-[10px] text-slate-500">Illumination & Patrols</div>
+              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Citizen
+              </div>
             </div>
           </Link>
 
           <Link
-            to="/public-help"
-            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+            to="/water-tanker"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
           >
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <HelpCircle className="w-4 h-4" />
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Droplets className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
+                CMWSSB
+              </span>
             </div>
             <div>
-              <div className="text-xs font-bold text-navy-900">Help Finder</div>
-              <div className="text-[10px] text-slate-500">Restrooms & Water</div>
+              <div className="text-xs font-bold text-navy-900">Dial-a-Tanker (#6)</div>
+              <div className="text-[10px] text-slate-500">GPS & Potability Lab</div>
+              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Citizen
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            to="/ward-sabha"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Vote className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                Ward Council
+              </span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Ward Sabha (#7)</div>
+              <div className="text-[10px] text-slate-500">Citizen Budget Voting</div>
+              <div className="mt-1 text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Citizen
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            to="/civic-pass"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Award className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                Karma Pass
+              </span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Civic Pass (#8)</div>
+              <div className="text-[10px] text-slate-500">Tax Rebates & Rewards</div>
+              <div className="mt-1 text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Volunteer & Citizen
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            to="/animal-rescue"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-rose-500 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Heart className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded">
+                Health Wing
+              </span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Animal Rescue (#9)</div>
+              <div className="text-[10px] text-slate-500">24/7 Veterinary Van</div>
+              <div className="mt-1 text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded inline-block">
+                Role: Volunteer & Citizen
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            to="/emergency-sos"
+            className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-rose-600 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-red-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Siren className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-black uppercase text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded">
+                1070 SOS
+              </span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Emergency SOS (#13)</div>
+              <div className="text-[10px] text-slate-500">Multi-Agency First Alarm</div>
+              <div className="mt-1 text-[9px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded inline-block">
+                Role: All Users
+              </div>
             </div>
           </Link>
         </div>

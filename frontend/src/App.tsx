@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
+import { LiveTelemetryBar } from './components/common/LiveTelemetryBar';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -23,7 +24,7 @@ import { SLARiskPage } from './pages/SLARiskPage';
 import { TransparencyHeroPage } from './pages/TransparencyHeroPage';
 import { ExecutiveReportPage } from './pages/ExecutiveReportPage';
 
-// 21 CivicNexus Solutions New Feature Pages
+// 21 Civic Solutions Existing Pages
 import { NearbyProblemsMapPage } from './pages/NearbyProblemsMapPage';
 import { TamilVoiceAssistantPage } from './pages/TamilVoiceAssistantPage';
 import { RepairProofPage } from './pages/RepairProofPage';
@@ -38,6 +39,22 @@ import { OverdueEscalationPage } from './pages/OverdueEscalationPage';
 import { CivicSimulatorPage } from './pages/CivicSimulatorPage';
 import { CivicKnowledgeGraphPage } from './pages/CivicKnowledgeGraphPage';
 import { CivicImpactAnalyticsPage } from './pages/CivicImpactAnalyticsPage';
+
+// 15 Flagship Municipal Features Pages
+import { DepartmentDirectoryPage } from './pages/DepartmentDirectoryPage';
+import { WhatsAppBotSimulatorPage } from './pages/WhatsAppBotSimulatorPage';
+import { MonsoonFloodDeskPage } from './pages/MonsoonFloodDeskPage';
+import { WardTenderContractorPage } from './pages/WardTenderContractorPage';
+import { AIRoadDefectScannerPage } from './pages/AIRoadDefectScannerPage';
+import { NightSafetyRadarPage } from './pages/NightSafetyRadarPage';
+import { DialATankerRadarPage } from './pages/DialATankerRadarPage';
+import { DigitalWardSabhaPage } from './pages/DigitalWardSabhaPage';
+import { CivicPassKarmaPage } from './pages/CivicPassKarmaPage';
+import { StrayAnimalRescuePage } from './pages/StrayAnimalRescuePage';
+import { StreetNoiseMonitorPage } from './pages/StreetNoiseMonitorPage';
+import { UrbanTreeGuardianPage } from './pages/UrbanTreeGuardianPage';
+import { PowerSubstationRadarPage } from './pages/PowerSubstationRadarPage';
+import { EmergencyHazardDeskPage } from './pages/EmergencyHazardDeskPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean }> = ({ children, adminOnly }) => {
   const { user, isLoading, isAdmin } = useAuth();
@@ -63,6 +80,9 @@ export const App: React.FC = () => {
       <Router>
         <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
           <Header />
+          {/* Global Real-Time Incident Telemetry & Ticker */}
+          <LiveTelemetryBar />
+
           <main className="flex-1">
             <Routes>
               {/* Public Routes */}
@@ -71,7 +91,23 @@ export const App: React.FC = () => {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/gis-heatmap" element={<GISHeatmapPage />} />
 
-              {/* 21 CivicNexus Solutions Accessible Routes */}
+              {/* 15 Flagship Municipal Feature Routes */}
+              <Route path="/departments" element={<DepartmentDirectoryPage />} />
+              <Route path="/whatsapp-bot" element={<WhatsAppBotSimulatorPage />} />
+              <Route path="/flood-desk" element={<MonsoonFloodDeskPage />} />
+              <Route path="/tenders" element={<WardTenderContractorPage />} />
+              <Route path="/road-scanner" element={<AIRoadDefectScannerPage />} />
+              <Route path="/night-safety" element={<NightSafetyRadarPage />} />
+              <Route path="/water-tanker" element={<DialATankerRadarPage />} />
+              <Route path="/ward-sabha" element={<DigitalWardSabhaPage />} />
+              <Route path="/civic-pass" element={<CivicPassKarmaPage />} />
+              <Route path="/animal-rescue" element={<StrayAnimalRescuePage />} />
+              <Route path="/noise-monitor" element={<StreetNoiseMonitorPage />} />
+              <Route path="/tree-guardian" element={<UrbanTreeGuardianPage />} />
+              <Route path="/power-grid" element={<PowerSubstationRadarPage />} />
+              <Route path="/emergency-sos" element={<EmergencyHazardDeskPage />} />
+
+              {/* 21 Civic Solutions Existing Routes */}
               <Route path="/nearby-map" element={<NearbyProblemsMapPage />} />
               <Route path="/voice-assistant" element={<TamilVoiceAssistantPage />} />
               <Route path="/repair-proof" element={<RepairProofPage />} />

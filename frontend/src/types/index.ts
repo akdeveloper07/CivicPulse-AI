@@ -1,4 +1,10 @@
-export type UserRole = 'citizen' | 'administrator' | 'system_admin';
+export type UserRole =
+  | 'citizen'
+  | 'volunteer'
+  | 'contractor'
+  | 'department_officer'
+  | 'administrator'
+  | 'system_admin';
 
 export interface User {
   id: string;
@@ -536,5 +542,219 @@ export interface WardAccountabilityScore {
   performance_tier: 'Gold' | 'Silver' | 'Needs Improvement';
 }
 
+// ==========================================
+// MUNICIPAL DEPARTMENTS & REAL-TIME SYSTEM
+// ==========================================
 
+export interface CivicDepartmentInfo {
+  id: string;
+  name: string;
+  short_code: string;
+  category: string;
+  description: string;
+  nodal_officer: string;
+  designation: string;
+  helpline: string;
+  toll_free: string;
+  email: string;
+  active_crews: number;
+  sla_compliance_pct: number;
+  open_tickets: number;
+  avg_response_time_hours: number;
+  services_operated: string[];
+  icon_name: string;
+}
 
+export interface RealTimeCivicEvent {
+  id: string;
+  timestamp: string;
+  type: 'NEW_REPORT' | 'CREW_DISPATCHED' | 'SLA_COUNTDOWN' | 'REPAIR_VERIFIED' | 'EMERGENCY_ALERT' | 'COMMUNITY_DRIVE';
+  title: string;
+  description: string;
+  ward: string;
+  department: string;
+  status: string;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
+}
+
+// 1. WhatsApp Civic Chatbot Simulator
+export interface WhatsAppChatMessage {
+  id: string;
+  sender: 'user' | 'bot';
+  text: string;
+  timestamp: string;
+  image_url?: string;
+  quick_replies?: string[];
+  ticket_id?: string;
+}
+
+// 2. Monsoon & Flood Emergency Desk
+export interface FloodRescuePoint {
+  id: string;
+  location_name: string;
+  zone: string;
+  water_depth_inches: number;
+  risk_level: 'Safe' | 'Moderate' | 'Severe' | 'Critical';
+  pumps_operational: number;
+  boats_deployed: number;
+  relief_camp: string;
+  shelter_capacity: number;
+  helpline: string;
+  updated_at: string;
+}
+
+// 3. Ward Tender & Contractor Tracker
+export interface WardTenderContract {
+  id: string;
+  work_name: string;
+  ward: string;
+  department: string;
+  sanctioned_amount_lakhs: number;
+  contractor_name: string;
+  contractor_phone: string;
+  award_date: string;
+  completion_deadline: string;
+  warranty_period_years: number;
+  status: 'In Progress' | 'Completed' | 'Delayed' | 'Under Inspection';
+  defect_liability_active: boolean;
+  penalties_incurred_inr: number;
+}
+
+// 4. AI Dashcam Road Scanner
+export interface DetectedRoadDefect {
+  id: string;
+  type: 'Pothole' | 'Crack' | 'Open Manhole' | 'Faded Crossing';
+  confidence: number;
+  severity: 'Minor' | 'Moderate' | 'Severe';
+  bounding_box: { x: number; y: number; width: number; height: number };
+  latitude: number;
+  longitude: number;
+  street_name: string;
+}
+
+// 5. Women's Night Safety & Well-Lit Radar
+export interface NightSafetyLocation {
+  id: string;
+  route_name: string;
+  ward: string;
+  lux_illumination: number;
+  safety_score: number;
+  cctv_count: number;
+  police_patrol_active: boolean;
+  pink_booth_nearby: boolean;
+  open_shops_late: boolean;
+  safest_time_window: string;
+  recommendation: 'Recommended' | 'Caution' | 'Avoid Alone';
+}
+
+// 6. Metro Water Tanker & Purity Index
+export interface WaterTankerStatus {
+  booking_id: string;
+  citizen_name: string;
+  street: string;
+  capacity_liters: number;
+  driver_name: string;
+  driver_contact: string;
+  truck_number: string;
+  eta_minutes: number;
+  status: 'Dispatched' | 'En Route' | 'Delivered';
+  pds_purity_score: {
+    tds_ppm: number;
+    ph_level: number;
+    chlorine_mg_l: number;
+    potability: 'Excellent' | 'Good' | 'Requires Boiling';
+  };
+}
+
+// 7. Digital Ward Sabha
+export interface WardSabhaVotingProposal {
+  id: string;
+  title: string;
+  ward: string;
+  proposer: string;
+  estimated_cost_lakhs: number;
+  votes_for: number;
+  votes_against: number;
+  user_voted?: 'for' | 'against';
+  days_remaining: number;
+  category: string;
+  impact_summary: string;
+}
+
+// 8. Citizen Civic Pass & Karma Card
+export interface CivicPassRecord {
+  citizen_id: string;
+  full_name: string;
+  ward: string;
+  tier: 'Bronze Resident' | 'Silver Steward' | 'Gold Ward Champion' | 'Platinum Civic Hero';
+  karma_points: number;
+  verified_reports_count: number;
+  repair_audits_count: number;
+  cleanups_attended: number;
+  rank_in_ward: number;
+  joined_date: string;
+  qr_code_hash: string;
+}
+
+// 9. Animal Rescue & Veterinary Care
+export interface AnimalRescueReport {
+  id: string;
+  animal_type: 'Dog' | 'Cat' | 'Cattle' | 'Bird' | 'Wildlife';
+  issue: 'Injured' | 'Cattle Blocking Traffic' | 'Rabies Suspect' | 'Trapped';
+  location: string;
+  reported_at: string;
+  status: 'Assigned' | 'Rescue Van Dispatched' | 'In Treatment' | 'Resolved';
+  assigned_vet: string;
+  shelter_name: string;
+}
+
+// 10. Street Noise Pollution Monitor
+export interface NoisePollutionReading {
+  id: string;
+  area_name: string;
+  zone: string;
+  current_db: number;
+  permissible_limit_db: number;
+  category: 'Residential' | 'Commercial' | 'Silence Zone' | 'Industrial';
+  status: 'Normal' | 'Elevated' | 'Violating';
+  primary_source: string;
+  recorded_at: string;
+}
+
+// 11. Urban Tree Guardian
+export interface UrbanTreeItem {
+  id: string;
+  tree_species: string;
+  tamil_name: string;
+  age_years: number;
+  ward: string;
+  location: string;
+  health_status: 'Healthy' | 'Needs Water' | 'Infested' | 'Illegal Felling Risk';
+  adopted_by?: string;
+  co2_absorption_kg: number;
+}
+
+// 12. Power Grid & Transformer Radar
+export interface PowerSubstationRadar {
+  substation_id: string;
+  name: string;
+  zone: string;
+  load_status: 'Optimal' | 'High' | 'Overloaded';
+  transformer_outages: number;
+  open_spark_hazards: number;
+  helpline: string;
+  last_maintenance: string;
+  next_scheduled_cut?: string;
+}
+
+// 13. 1-Tap SOS Emergency Hazard Alert
+export interface EmergencyHazardAlert {
+  id: string;
+  hazard_type: 'Live Wire / Electrocution' | 'Toxic Gas Leak' | 'Collapsed Wall' | 'Burst Main Canal';
+  severity: 'Immediate Danger to Life';
+  location: string;
+  dispatched_agencies: string[];
+  reported_by: string;
+  eta_emergency_crew: string;
+  status: 'Active Alert' | 'Containment in Progress' | 'Secured';
+}

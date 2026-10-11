@@ -5,7 +5,11 @@ import {
   NearbyCivicIssue, RepairProofRecord, VoiceDraftResult, ComplaintTrackingStep,
   SafeRouteHazard, PublicServiceAlert, OverdueEscalationCase, AccessibilityBarrier,
   PublicFacility, CommunityEvent, OfflineDraftReport, SimulatorIntervention,
-  CivicGraphNode, CivicGraphLink, WardAccountabilityScore
+  CivicGraphNode, CivicGraphLink, WardAccountabilityScore,
+  CivicDepartmentInfo, FloodRescuePoint, WardTenderContract, DetectedRoadDefect,
+  NightSafetyLocation, WaterTankerStatus, WardSabhaVotingProposal, CivicPassRecord,
+  AnimalRescueReport, NoisePollutionReading, UrbanTreeItem, PowerSubstationRadar,
+  EmergencyHazardAlert
 } from '../types';
 import {
   DEMO_USERS, MOCK_CATEGORIES, MOCK_REPORTS, MOCK_CLUSTERS,
@@ -17,7 +21,11 @@ import {
   MOCK_NEARBY_ISSUES, MOCK_REPAIR_PROOFS, MOCK_TRACKING_STEPS,
   MOCK_SAFE_ROUTE_HAZARDS, MOCK_PUBLIC_ALERTS, MOCK_OVERDUE_CASES,
   MOCK_ACCESSIBILITY_BARRIERS, MOCK_PUBLIC_FACILITIES, MOCK_COMMUNITY_EVENTS,
-  MOCK_SIMULATOR_INTERVENTIONS, MOCK_GRAPH_NODES, MOCK_GRAPH_LINKS, MOCK_WARD_SCORES
+  MOCK_SIMULATOR_INTERVENTIONS, MOCK_GRAPH_NODES, MOCK_GRAPH_LINKS, MOCK_WARD_SCORES,
+  MOCK_DEPARTMENTS, MOCK_FLOOD_POINTS, MOCK_TENDERS, MOCK_ROAD_DEFECTS,
+  MOCK_NIGHT_SAFETY, MOCK_WATER_TANKERS, MOCK_WARD_SABHA_PROPOSALS, MOCK_CIVIC_PASS,
+  MOCK_ANIMAL_CASES, MOCK_NOISE_READINGS, MOCK_TREES, MOCK_POWER_GRID,
+  MOCK_EMERGENCY_ALERTS
 } from './mockData';
 
 // Dynamic API Base URL determination
@@ -501,6 +509,57 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit = {}): T {
     return MOCK_WARD_SCORES as unknown as T;
   }
 
+  // 15 New Flagship Features Mock Fallbacks
+  if (cleanEndpoint === '/solutions/departments') {
+    return MOCK_DEPARTMENTS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/tenders') {
+    return MOCK_TENDERS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/flood-points') {
+    return MOCK_FLOOD_POINTS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/road-defects') {
+    return MOCK_ROAD_DEFECTS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/night-safety') {
+    return MOCK_NIGHT_SAFETY as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/water-tankers') {
+    return MOCK_WATER_TANKERS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/ward-sabha') {
+    return MOCK_WARD_SABHA_PROPOSALS as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/ward-sabha/') && cleanEndpoint.endsWith('/vote')) {
+    const id = cleanEndpoint.split('/')[3];
+    const prop = MOCK_WARD_SABHA_PROPOSALS.find(p => p.id === id);
+    if (prop) {
+      prop.votes_for += 1;
+      prop.user_voted = 'for';
+      return prop as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/civic-pass') {
+    return MOCK_CIVIC_PASS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/animal-cases') {
+    return MOCK_ANIMAL_CASES as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/noise-readings') {
+    return MOCK_NOISE_READINGS as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/trees') {
+    return MOCK_TREES as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/power-grid') {
+    return MOCK_POWER_GRID as unknown as T;
+  }
+  if (cleanEndpoint === '/solutions/emergency-alerts') {
+    return MOCK_EMERGENCY_ALERTS as unknown as T;
+  }
+
   // Generic fallback
   return {} as unknown as T;
 }
@@ -697,4 +756,29 @@ export const api = {
     request<SimulatorIntervention>(`/solutions/simulator/interventions/${id}/toggle`, { method: 'POST' }),
   getKnowledgeGraphData: () => request<{ nodes: CivicGraphNode[]; links: CivicGraphLink[] }>('/solutions/knowledge-graph'),
   getWardAccountabilityScores: () => request<WardAccountabilityScore[]>('/solutions/ward-scores'),
+
+  // 15 New Flagship Civic Features
+  getDepartments: () => request<CivicDepartmentInfo[]>('/solutions/departments'),
+  getTenders: () => request<WardTenderContract[]>('/solutions/tenders'),
+  getFloodPoints: () => request<FloodRescuePoint[]>('/solutions/flood-points'),
+  getRoadDefects: () => request<DetectedRoadDefect[]>('/solutions/road-defects'),
+  getNightSafety: () => request<NightSafetyLocation[]>('/solutions/night-safety'),
+  getWaterTankers: () => request<WaterTankerStatus[]>('/solutions/water-tankers'),
+  getWardSabhaProposals: () => request<WardSabhaVotingProposal[]>('/solutions/ward-sabha'),
+  voteWardSabhaProposal: (id: string, vote: 'for' | 'against') =>
+    request<WardSabhaVotingProposal>(`/solutions/ward-sabha/${id}/vote`, {
+      method: 'POST',
+      body: JSON.stringify({ vote }),
+    }),
+  getCivicPass: () => request<CivicPassRecord>('/solutions/civic-pass'),
+  getAnimalCases: () => request<AnimalRescueReport[]>('/solutions/animal-cases'),
+  getNoiseReadings: () => request<NoisePollutionReading[]>('/solutions/noise-readings'),
+  getTrees: () => request<UrbanTreeItem[]>('/solutions/trees'),
+  getPowerGrid: () => request<PowerSubstationRadar[]>('/solutions/power-grid'),
+  getEmergencyAlerts: () => request<EmergencyHazardAlert[]>('/solutions/emergency-alerts'),
+  triggerEmergencySOS: (data: Partial<EmergencyHazardAlert>) =>
+    request<EmergencyHazardAlert>('/solutions/emergency-alerts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 };
