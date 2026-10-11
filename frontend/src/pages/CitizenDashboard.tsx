@@ -70,37 +70,101 @@ export const CitizenDashboard: React.FC = () => {
   const activeCount = reports.filter(r => ['Under Review', 'In Progress'].includes(r.status)).length;
   const resolvedCount = reports.filter(r => r.status === 'Resolved').length;
 
+  const userRole = user?.role || 'citizen';
+
+  const roleMeta: Record<UserRole, {
+    badge: string;
+    title: string;
+    desc: string;
+    primaryBtn: { text: string; link: string; icon: any };
+    secondaryBtn: { text: string; link: string; icon: any };
+    isolationNotice: string;
+  }> = {
+    citizen: {
+      badge: 'Citizen Action Hub',
+      title: 'Community Issue Intelligence',
+      desc: 'Connecting Citizens. Improving Communities. Experience seamless one-tap GPS reporting, transparent duplicate prevention, and AI-audited municipal resolution.',
+      primaryBtn: { text: 'One-Tap Report Issue', link: '/submit-report', icon: Plus },
+      secondaryBtn: { text: 'Civic Transparency', link: '/hero-transparency', icon: Award },
+      isolationNotice: 'Non-citizen tools (contractor tenders, flood pumps, substation grids) are restricted by municipal security bylaws.',
+    },
+    volunteer: {
+      badge: 'Ward Volunteer Hub',
+      title: 'Community Stewardship & Action',
+      desc: 'Empowering active ward volunteers. Coordinate tree adoption censuses, audit RepairProof completions, and guide citizens with localized assistance.',
+      primaryBtn: { text: 'Tree Guardian Canopy', link: '/tree-guardian', icon: Trees },
+      secondaryBtn: { text: 'Civic Pass Karma', link: '/civic-pass', icon: Award },
+      isolationNotice: 'High-voltage power substation grids, contractor tenders, and flood pump SCADA controls are restricted.',
+    },
+    contractor: {
+      badge: 'Contractor Operations Hub',
+      title: 'Work Orders & Defect Liability',
+      desc: 'Authorized municipal engineering contractor workspace. Submit AI road roughness scans, monitor defect liability retention, and upload repair evidence.',
+      primaryBtn: { text: 'Open Ward Tenders', link: '/tenders', icon: Hammer },
+      secondaryBtn: { text: 'AI Road Scanner', link: '/road-scanner', icon: Camera },
+      isolationNotice: 'SCADA flood pumps, power substation grids, and municipal budget voting are restricted.',
+    },
+    department_officer: {
+      badge: 'Municipal Command Center',
+      title: 'Departmental Triage & SCADA Telemetry',
+      desc: 'Nodal authority command console. Monitor real-time stormwater flood telemetry, manage high-voltage feeders, and resolve escalated civic grievances.',
+      primaryBtn: { text: 'Monsoon Flood Desk', link: '/flood-desk', icon: Waves },
+      secondaryBtn: { text: 'Power Grid SCADA', link: '/power-grid', icon: Zap },
+      isolationNotice: 'Contractor tender bidding and root administrative configurations are restricted.',
+    },
+    administrator: {
+      badge: 'Executive Zonal Command',
+      title: 'Citywide Governance & Intelligence',
+      desc: 'Executive mayoral and zonal oversight. Analyze cross-departmental SLA risk radars, review duplicate AI clusters, and run infrastructure what-if simulations.',
+      primaryBtn: { text: 'Admin Operations', link: '/admin/dashboard', icon: Activity },
+      secondaryBtn: { text: 'SLA Risk Radar', link: '/sla-risk', icon: AlertTriangle },
+      isolationNotice: 'Full executive oversight active across all 15 municipal flagship features.',
+    },
+    system_admin: {
+      badge: 'System Admin Console',
+      title: 'Platform Security & Architecture',
+      desc: 'DevOps & Root system management. Benchmark algorithmic fairness, configure API access policies, and audit system-wide security.',
+      primaryBtn: { text: 'System Administration', link: '/admin/system', icon: ShieldAlert },
+      secondaryBtn: { text: 'Operations Dashboard', link: '/admin/dashboard', icon: Activity },
+      isolationNotice: 'Full platform root control active across all civic microservices.',
+    },
+  };
+
+  const currentRoleMeta = roleMeta[userRole] || roleMeta.citizen;
+  const PrimaryIcon = currentRoleMeta.primaryBtn.icon;
+  const SecondaryIcon = currentRoleMeta.secondaryBtn.icon;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header Banner */}
+      {/* Header Banner - Dynamic per Role */}
       <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-navy-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl border border-slate-800">
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-300 text-xs font-semibold backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5" /> CivicNexus AI · Citizen Action Hub
+              <Sparkles className="w-3.5 h-3.5" /> CivicNexus AI · {currentRoleMeta.badge}
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Community Issue Intelligence
+              {currentRoleMeta.title}
             </h1>
             <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
-              Connecting Citizens. Improving Communities. Experience seamless one-tap GPS reporting, transparent duplicate prevention, and AI-audited municipal resolution.
+              {currentRoleMeta.desc}
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
             <Link
-              to="/submit-report"
+              to={currentRoleMeta.primaryBtn.link}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-white font-bold shadow-lg hover:shadow-teal-500/25 transition-all text-sm group"
             >
-              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-              <span>One-Tap Report Issue</span>
+              <PrimaryIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span>{currentRoleMeta.primaryBtn.text}</span>
             </Link>
             <Link
-              to="/hero-transparency"
+              to={currentRoleMeta.secondaryBtn.link}
               className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-xs font-semibold backdrop-blur-md transition-all"
             >
-              <Award className="w-4 h-4 text-teal-400" />
-              <span>Civic Transparency</span>
+              <SecondaryIcon className="w-4 h-4 text-teal-400" />
+              <span>{currentRoleMeta.secondaryBtn.text}</span>
             </Link>
           </div>
         </div>
@@ -423,7 +487,7 @@ export const CitizenDashboard: React.FC = () => {
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-teal-700 shrink-0" />
                 <span className="text-teal-950 font-medium">
-                  <strong>Role Isolation Active:</strong> Logged in as <strong className="text-teal-900 capitalize">{userRole}</strong>. Non-citizen features (contractor tenders, flood pumps, substation grids) are restricted.
+                  <strong>Role Isolation Active:</strong> Logged in as <strong className="text-teal-900 capitalize">{userRole.replace('_', ' ')}</strong>. {currentRoleMeta.isolationNotice}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -447,7 +511,7 @@ export const CitizenDashboard: React.FC = () => {
                       : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  All 15 Services (Transparency)
+                  All 15 Services (Transparency View)
                 </button>
               </div>
             </div>

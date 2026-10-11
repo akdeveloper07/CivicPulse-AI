@@ -181,8 +181,20 @@ export const App: React.FC = () => {
               <Route path="/accessibility" element={<AccessibilityMapperPage />} />
               <Route path="/public-help" element={<PublicHelpFinderPage />} />
               <Route path="/community" element={<CommunityActionPage />} />
-              <Route path="/offline-reports" element={<OfflineReportingPage />} />
-              <Route path="/escalations" element={<OverdueEscalationPage />} />
+              <Route
+                path="/escalations"
+                element={
+                  <RoleAccessGate
+                    allowedRoles={['department_officer', 'administrator']}
+                    featureName="Statutory Grievance Escalation & Overdue Desk (#12)"
+                    departmentName="Chief Minister Grievance & GCC Vigilance Cell"
+                    featureCode="ESC-12"
+                    reason="Statutory penalty issuance, cross-departmental grievance reassignment, and SLA breach escalations are strictly restricted to municipal departmental officers."
+                  >
+                    <OverdueEscalationPage />
+                  </RoleAccessGate>
+                }
+              />
 
               {/* Restricted: Officer / Planner Only */}
               <Route

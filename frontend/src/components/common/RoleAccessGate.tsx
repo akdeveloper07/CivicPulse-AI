@@ -129,7 +129,7 @@ export const RoleAccessGate: React.FC<RoleAccessGateProps> = ({
           </div>
 
           <p className="text-xs text-rose-950 leading-relaxed font-medium">
-            {reason || `As a signed-in Citizen, your account is restricted from executing commands or accessing technical telemetry for this service. This system is strictly reserved for authorized field contractors and departmental engineers under municipal governance bylaws.`}
+            {reason || `As a signed-in ${currentRoleInfo.title}, your account does not possess the requisite operational credentials for this service. Access is strictly restricted to authorized roles under municipal governance bylaws.`}
           </p>
         </div>
 
@@ -163,7 +163,7 @@ export const RoleAccessGate: React.FC<RoleAccessGateProps> = ({
             className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Return to Citizen Dashboard</span>
+            <span>Return to Workspace Dashboard</span>
           </button>
 
           <Link
