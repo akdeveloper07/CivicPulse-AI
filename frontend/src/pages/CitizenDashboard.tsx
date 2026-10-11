@@ -6,7 +6,8 @@ import { Report, IssueCategory, RecurrenceEvent } from '../types';
 import { StatusBadge } from '../components/common/Badge';
 import {
   Plus, Search, Filter, Calendar, MapPin, ArrowRight, Activity, Clock,
-  Sparkles, ShieldCheck, Camera, Navigation, AlertTriangle, Layers, Award
+  Sparkles, ShieldCheck, Camera, Navigation, AlertTriangle, Layers, Award,
+  Compass, Mic, Users, HelpCircle, CheckCircle
 } from 'lucide-react';
 
 export const CitizenDashboard: React.FC = () => {
@@ -143,6 +144,104 @@ export const CitizenDashboard: React.FC = () => {
             </div>
             <div className="text-xs font-semibold text-slate-500">Resolution Rate</div>
           </div>
+        </div>
+      </div>
+
+      {/* 21 Civic Solutions Quick Access Deck */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+            <h3 className="text-sm font-bold text-navy-900 uppercase tracking-wider">
+              Smart Civic Tools · Citizen Actions
+            </h3>
+          </div>
+          <Link
+            to="/all-solutions"
+            className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
+          >
+            Explore All 21 Solutions <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <Link
+            to="/nearby-map"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Compass className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Nearby Radar</div>
+              <div className="text-[10px] text-slate-500">1-Click Support</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/voice-assistant"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Mic className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Tamil Voice</div>
+              <div className="text-[10px] text-slate-500">வணக்கம் Assistant</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/repair-proof"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <CheckCircle className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">RepairProof</div>
+              <div className="text-[10px] text-slate-500">Before / After Slider</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/safe-route"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Navigation className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">SafeRoute</div>
+              <div className="text-[10px] text-slate-500">Hazard Avoidance</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/community"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Users className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Community Hub</div>
+              <div className="text-[10px] text-slate-500">Karma Rewards</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/public-help"
+            className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-2"
+          >
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <HelpCircle className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-navy-900">Help Finder</div>
+              <div className="text-[10px] text-slate-500">Restrooms & Water</div>
+            </div>
+          </Link>
         </div>
       </div>
 

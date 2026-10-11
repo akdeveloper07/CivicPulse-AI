@@ -5,7 +5,7 @@ import { AnalyticsSummary } from '../types';
 import {
   Activity, Layers, AlertTriangle, Lightbulb, TrendingUp, Cpu,
   Clock, ArrowRight, ShieldAlert, CheckCircle2, GitMerge, MapPin,
-  Truck, FileText, Settings, Sparkles
+  Truck, FileText, Settings, Sparkles, Sliders, Network, Award, Bell
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -130,20 +130,37 @@ export const AdminDashboard: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* Quick Operations Strip */}
-          <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-100">
-            <Link to="/executive-report" className="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
-              <FileText className="w-4 h-4 text-teal-600" />
-              <span>Taxpayer ROI Report</span>
-            </Link>
-            <Link to="/field-dispatch" className="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
-              <Truck className="w-4 h-4 text-blue-600" />
-              <span>Crew Routing</span>
-            </Link>
-            <Link to="/admin/system" className="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
-              <Settings className="w-4 h-4 text-purple-600" />
-              <span>System & Audit</span>
-            </Link>
+          {/* Municipal Intelligence & Operations Strip */}
+          <div className="space-y-2 pt-3 border-t border-slate-100">
+            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              Strategic Municipal Tools
+            </div>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              <Link to="/simulator" className="p-2.5 rounded-xl bg-slate-50 hover:bg-teal-50 hover:border-teal-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <Sliders className="w-4 h-4 text-teal-600" />
+                <span className="text-[11px] font-bold">Simulator</span>
+              </Link>
+              <Link to="/knowledge-graph" className="p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <Network className="w-4 h-4 text-indigo-600" />
+                <span className="text-[11px] font-bold">Topology</span>
+              </Link>
+              <Link to="/impact-scorecard" className="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <Award className="w-4 h-4 text-emerald-600" />
+                <span className="text-[11px] font-bold">Scorecard</span>
+              </Link>
+              <Link to="/escalations" className="p-2.5 rounded-xl bg-slate-50 hover:bg-rose-50 hover:border-rose-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <ShieldAlert className="w-4 h-4 text-rose-600" />
+                <span className="text-[11px] font-bold">SLA Breaches</span>
+              </Link>
+              <Link to="/public-alerts" className="p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50 hover:border-amber-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <Bell className="w-4 h-4 text-amber-600" />
+                <span className="text-[11px] font-bold">Alerts</span>
+              </Link>
+              <Link to="/field-dispatch" className="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50 hover:border-blue-300 border border-slate-100 text-center text-xs font-semibold text-slate-700 flex flex-col items-center gap-1 transition-all">
+                <Truck className="w-4 h-4 text-blue-600" />
+                <span className="text-[11px] font-bold">Dispatch</span>
+              </Link>
+            </div>
           </div>
         </div>
 

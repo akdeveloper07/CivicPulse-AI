@@ -23,6 +23,22 @@ import { SLARiskPage } from './pages/SLARiskPage';
 import { TransparencyHeroPage } from './pages/TransparencyHeroPage';
 import { ExecutiveReportPage } from './pages/ExecutiveReportPage';
 
+// 21 CivicNexus Solutions New Feature Pages
+import { NearbyProblemsMapPage } from './pages/NearbyProblemsMapPage';
+import { TamilVoiceAssistantPage } from './pages/TamilVoiceAssistantPage';
+import { RepairProofPage } from './pages/RepairProofPage';
+import { LiveTrackingPage } from './pages/LiveTrackingPage';
+import { SafeRoutePage } from './pages/SafeRoutePage';
+import { PublicServiceAlertsPage } from './pages/PublicServiceAlertsPage';
+import { AccessibilityMapperPage } from './pages/AccessibilityMapperPage';
+import { PublicHelpFinderPage } from './pages/PublicHelpFinderPage';
+import { CommunityActionPage } from './pages/CommunityActionPage';
+import { OfflineReportingPage } from './pages/OfflineReportingPage';
+import { OverdueEscalationPage } from './pages/OverdueEscalationPage';
+import { CivicSimulatorPage } from './pages/CivicSimulatorPage';
+import { CivicKnowledgeGraphPage } from './pages/CivicKnowledgeGraphPage';
+import { CivicImpactAnalyticsPage } from './pages/CivicImpactAnalyticsPage';
+
 const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean }> = ({ children, adminOnly }) => {
   const { user, isLoading, isAdmin } = useAuth();
 
@@ -54,6 +70,22 @@ export const App: React.FC = () => {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/gis-heatmap" element={<GISHeatmapPage />} />
+
+              {/* 21 CivicNexus Solutions Accessible Routes */}
+              <Route path="/nearby-map" element={<NearbyProblemsMapPage />} />
+              <Route path="/voice-assistant" element={<TamilVoiceAssistantPage />} />
+              <Route path="/repair-proof" element={<RepairProofPage />} />
+              <Route path="/tracking/:id" element={<LiveTrackingPage />} />
+              <Route path="/safe-route" element={<SafeRoutePage />} />
+              <Route path="/public-alerts" element={<PublicServiceAlertsPage />} />
+              <Route path="/accessibility" element={<AccessibilityMapperPage />} />
+              <Route path="/public-help" element={<PublicHelpFinderPage />} />
+              <Route path="/community" element={<CommunityActionPage />} />
+              <Route path="/offline-reports" element={<OfflineReportingPage />} />
+              <Route path="/escalations" element={<OverdueEscalationPage />} />
+              <Route path="/simulator" element={<CivicSimulatorPage />} />
+              <Route path="/knowledge-graph" element={<CivicKnowledgeGraphPage />} />
+              <Route path="/impact-scorecard" element={<CivicImpactAnalyticsPage />} />
 
               {/* Citizen Routes */}
               <Route
@@ -186,6 +218,5 @@ export const App: React.FC = () => {
     </AuthProvider>
   );
 };
-
 
 export default App;

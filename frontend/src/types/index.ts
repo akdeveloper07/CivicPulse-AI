@@ -270,3 +270,271 @@ export interface ExecutiveReportData {
   generated_at: string;
 }
 
+// ==========================================
+// 21 CIVICNEXUS AI FEATURE TYPES
+// ==========================================
+// 21 CIVICNEXUS AI FEATURE TYPES
+// ==========================================
+
+// #2 Nearby Problems Map
+export interface NearbyCivicIssue {
+  id: string;
+  title: string;
+  category: string;
+  latitude: number;
+  longitude: number;
+  distance_meters?: number;
+  distance_km?: number;
+  support_count: number;
+  user_supported?: boolean;
+  status: string;
+  reported_time?: string;
+  last_confirmed?: string;
+  is_verified_hazard?: boolean;
+  address?: string;
+  urgency?: string;
+  description?: string;
+  location_name?: string;
+  department?: string;
+}
+
+// #3 & #19 RepairProof & Photo Change Detector
+export interface RepairProofRecord {
+  report_id: string;
+  title: string;
+  category: string;
+  location: string;
+  resolved_date: string;
+  before_photo?: string;
+  after_photo?: string;
+  before_image_url?: string;
+  after_image_url?: string;
+  technician_name?: string;
+  contractor_assigned?: string;
+  department: string;
+  ai_structural_match_pct?: number;
+  ai_authenticity_score?: number;
+  ai_authenticity_verdict?: string;
+  ai_notes?: string;
+  citizen_confirm_count: number;
+  citizen_dispute_count: number;
+  user_vote?: 'confirmed' | 'disputed';
+  status: string;
+}
+
+// #4 & #9 Tamil Voice Assistant & Multimodal
+export interface VoiceDraftResult {
+  transcript: string;
+  language: 'ta-IN' | 'en-IN' | 'en-US';
+  translated_text: string;
+  extracted_category: string;
+  extracted_urgency: number;
+  extracted_impact: number;
+  suggested_department: string;
+  summary: string;
+}
+
+// #5 Live Status Tracking Step
+export interface ComplaintTrackingStep {
+  step?: string;
+  step_number?: number;
+  title?: string;
+  status?: 'completed' | 'in_progress' | 'pending';
+  timestamp: string;
+  completed?: boolean;
+  active?: boolean;
+  department: string;
+  officer?: string;
+  notes?: string;
+  description?: string;
+}
+
+// #10 SafeRoute Civic Hazard
+export interface SafeRouteHazard {
+  id: string;
+  title: string;
+  type?: string;
+  hazard_type?: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Moderate' | 'Low';
+  latitude: number;
+  longitude: number;
+  location_name: string;
+  suggested_detour?: string;
+  description?: string;
+}
+
+// #11 Public-Service Alerts
+export interface PublicServiceAlert {
+  id: string;
+  title: string;
+  category: string;
+  severity?: string;
+  urgency?: string;
+  affected_areas?: string[];
+  affected_wards?: string[];
+  start_time: string;
+  end_time: string;
+  source_authority?: string;
+  issuing_department?: string;
+  source_verification_url?: string;
+  is_verified?: boolean;
+  subscriber_count: number;
+  is_subscribed?: boolean;
+  description?: string;
+  alternative_arrangements?: string;
+}
+
+// #12 & #17 Overdue Escalation & Follow-up Assistant
+export interface OverdueEscalationCase {
+  report_id: string;
+  title: string;
+  category: string;
+  submitted_date?: string;
+  filed_date?: string;
+  location?: string;
+  sla_deadline?: string;
+  sla_limit_days?: number;
+  hours_overdue?: number;
+  overdue_days?: number;
+  assigned_department?: string;
+  department?: string;
+  current_officer?: string;
+  assigned_officer?: string;
+  escalated_to?: string;
+  escalation_status: string;
+  rti_draft_generated?: boolean;
+}
+
+// #13 Accessibility Barrier
+export interface AccessibilityBarrier {
+  id: string;
+  title: string;
+  barrier_type: string;
+  severity: 'Severe' | 'Critical' | 'High' | 'Moderate' | 'Minor';
+  latitude?: number;
+  longitude?: number;
+  location_name: string;
+  wheelchair_impact: string;
+  reported_by: string;
+  status: string;
+}
+
+// #14 Public Help Finder
+export interface PublicFacility {
+  id: string;
+  name: string;
+  category?: string;
+  facility_type?: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+  wheelchair_accessible?: boolean;
+  is_wheelchair_accessible?: boolean;
+  cleanliness_rating?: number;
+  hygiene_rating?: number;
+  operating_hours: string;
+  contact_number?: string;
+  contact_phone?: string;
+  free_access?: boolean;
+  is_verified?: boolean;
+  distance_km?: number;
+  ward?: string;
+}
+
+// #15 Community Action Matcher
+export interface CommunityEvent {
+  id: string;
+  title: string;
+  type?: string;
+  category?: string;
+  description?: string;
+  location: string;
+  event_date?: string;
+  date?: string;
+  time: string;
+  organizer: string;
+  volunteers_registered: number;
+  target_volunteers?: number;
+  volunteers_needed?: number;
+  user_registered?: boolean;
+  perks?: string[];
+  karma_points?: number;
+}
+
+// #16 Offline Draft
+export interface OfflineDraftReport {
+  id?: string;
+  local_id?: string;
+  title: string;
+  description: string;
+  category?: string;
+  category_name?: string;
+  latitude?: number;
+  longitude?: number;
+  saved_at: string;
+  image_data_url?: string;
+  sync_status: 'pending' | 'syncing' | 'synced' | 'failed' | 'queued_offline';
+}
+
+// #18 Civic What-If Simulator
+export interface SimulatorIntervention {
+  id: string;
+  name: string;
+  cost_lakhs: number;
+  estimated_flood_reduction_pct: number;
+  pothole_prevented_count: number;
+  citizens_benefited: number;
+  roi_score: number;
+  selected: boolean;
+}
+
+// #20 Civic Knowledge Graph
+export interface CivicGraphNode {
+  id: string;
+  label: string;
+  type: string;
+  frequency?: number;
+}
+
+export interface CivicGraphLink {
+  source: string;
+  target: string;
+  relationship: string;
+  weight?: number;
+}
+
+export interface KnowledgeGraphNode {
+  id: string;
+  label: string;
+  type: string;
+  x?: number;
+  y?: number;
+  details?: string;
+}
+
+export interface KnowledgeGraphLink {
+  source: string;
+  target: string;
+  relationship: string;
+}
+
+export interface KnowledgeGraphData {
+  nodes: KnowledgeGraphNode[];
+  links: KnowledgeGraphLink[];
+}
+
+// #21 Civic Impact Analytics & Scorecard
+export interface WardAccountabilityScore {
+  ward: string;
+  zone: string;
+  total_reports: number;
+  resolved_rate_pct: number;
+  median_response_hours: number;
+  sla_adherence_pct: number;
+  reopened_rate_pct: number;
+  citizen_satisfaction_score: number;
+  performance_tier: 'Gold' | 'Silver' | 'Needs Improvement';
+}
+
+
+

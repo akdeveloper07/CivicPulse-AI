@@ -1,7 +1,11 @@
 import {
   AuthResponse, User, IssueCategory, Report, CandidateMatch, ReportMatch,
   IssueCluster, PriorityExplanation, RecurrenceEvent, RootCauseHypothesis,
-  ResolutionRecommendation, ForecastResponse, AnalyticsSummary, AuditLog, ModelEvaluation
+  ResolutionRecommendation, ForecastResponse, AnalyticsSummary, AuditLog, ModelEvaluation,
+  NearbyCivicIssue, RepairProofRecord, VoiceDraftResult, ComplaintTrackingStep,
+  SafeRouteHazard, PublicServiceAlert, OverdueEscalationCase, AccessibilityBarrier,
+  PublicFacility, CommunityEvent, OfflineDraftReport, SimulatorIntervention,
+  CivicGraphNode, CivicGraphLink, WardAccountabilityScore
 } from '../types';
 import {
   DEMO_USERS, MOCK_CATEGORIES, MOCK_REPORTS, MOCK_CLUSTERS,
@@ -9,7 +13,11 @@ import {
   MOCK_RECOMMENDATIONS, MOCK_PRIORITY_EXPLANATION, MOCK_FORECAST,
   MOCK_ANALYTICS_SUMMARY, MOCK_HEATMAP_POINTS, MOCK_WARD_STATS,
   MOCK_DISPATCH_ROUTES, MOCK_SLA_RISK_ITEMS, MOCK_HERO_STATS,
-  MOCK_MODEL_EVALUATION, MOCK_AUDIT_LOGS, MOCK_EXECUTIVE_REPORT
+  MOCK_MODEL_EVALUATION, MOCK_AUDIT_LOGS, MOCK_EXECUTIVE_REPORT,
+  MOCK_NEARBY_ISSUES, MOCK_REPAIR_PROOFS, MOCK_TRACKING_STEPS,
+  MOCK_SAFE_ROUTE_HAZARDS, MOCK_PUBLIC_ALERTS, MOCK_OVERDUE_CASES,
+  MOCK_ACCESSIBILITY_BARRIERS, MOCK_PUBLIC_FACILITIES, MOCK_COMMUNITY_EVENTS,
+  MOCK_SIMULATOR_INTERVENTIONS, MOCK_GRAPH_NODES, MOCK_GRAPH_LINKS, MOCK_WARD_SCORES
 } from './mockData';
 
 // Dynamic API Base URL determination
@@ -361,6 +369,138 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit = {}): T {
     return MOCK_MODEL_EVALUATION as unknown as T;
   }
 
+  // 18. 21 CivicNexus Solutions Fallbacks
+  if (cleanEndpoint === '/solutions/nearby-issues') {
+    return MOCK_NEARBY_ISSUES as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/nearby-issues/') && cleanEndpoint.endsWith('/support')) {
+    const id = cleanEndpoint.split('/')[3];
+    const item = MOCK_NEARBY_ISSUES.find(i => i.id === id);
+    if (item) {
+      item.support_count += 1;
+      item.user_supported = true;
+      return item as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/repair-proofs') {
+    return MOCK_REPAIR_PROOFS as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/repair-proofs/') && cleanEndpoint.endsWith('/vote')) {
+    const id = cleanEndpoint.split('/')[3];
+    let body: any = {};
+    try { body = JSON.parse((options.body as string) || '{}'); } catch (e) {}
+    const item = MOCK_REPAIR_PROOFS.find(p => p.report_id === id);
+    if (item) {
+      if (body.vote === 'confirmed') item.citizen_confirm_count += 1;
+      if (body.vote === 'disputed') item.citizen_dispute_count += 1;
+      item.user_vote = body.vote;
+      return item as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint.startsWith('/solutions/tracking/')) {
+    const id = cleanEndpoint.replace('/solutions/tracking/', '');
+    return (MOCK_TRACKING_STEPS[id] || MOCK_TRACKING_STEPS['rep-001']) as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/safe-route/hazards') {
+    return MOCK_SAFE_ROUTE_HAZARDS as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/alerts') {
+    return MOCK_PUBLIC_ALERTS as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/alerts/') && cleanEndpoint.endsWith('/toggle')) {
+    const id = cleanEndpoint.split('/')[3];
+    const alert = MOCK_PUBLIC_ALERTS.find(a => a.id === id);
+    if (alert) {
+      alert.is_subscribed = !alert.is_subscribed;
+      alert.subscriber_count += alert.is_subscribed ? 1 : -1;
+      return alert as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/overdue-cases') {
+    return MOCK_OVERDUE_CASES as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/overdue-cases/') && cleanEndpoint.endsWith('/escalate')) {
+    const id = cleanEndpoint.split('/')[3];
+    const item = MOCK_OVERDUE_CASES.find(c => c.report_id === id);
+    if (item) {
+      item.escalation_status = 'Escalated to Zonal Commissioner';
+      return item as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/accessibility-barriers') {
+    if (method === 'POST') {
+      let body: any = {};
+      try { body = JSON.parse((options.body as string) || '{}'); } catch (e) {}
+      const newBarrier: AccessibilityBarrier = {
+        id: `bar-${Date.now().toString().slice(-4)}`,
+        title: body.title || 'Reported Barrier',
+        barrier_type: body.barrier_type || 'Broken Ramp',
+        severity: body.severity || 'Moderate',
+        latitude: body.latitude || 12.9716,
+        longitude: body.longitude || 77.5946,
+        location_name: body.location_name || 'City Pedestrian Zone',
+        wheelchair_impact: body.wheelchair_impact || 'Impairs transit for wheelchair and mobility aid users.',
+        reported_by: 'Active Citizen',
+        status: 'Active Barrier',
+      };
+      MOCK_ACCESSIBILITY_BARRIERS.unshift(newBarrier);
+      return newBarrier as unknown as T;
+    }
+    return MOCK_ACCESSIBILITY_BARRIERS as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/public-facilities') {
+    return MOCK_PUBLIC_FACILITIES as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/community-events') {
+    return MOCK_COMMUNITY_EVENTS as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/community-events/') && cleanEndpoint.endsWith('/rsvp')) {
+    const id = cleanEndpoint.split('/')[3];
+    const ev = MOCK_COMMUNITY_EVENTS.find(e => e.id === id);
+    if (ev) {
+      ev.user_registered = !ev.user_registered;
+      ev.volunteers_registered += ev.user_registered ? 1 : -1;
+      return ev as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/simulator/interventions') {
+    return MOCK_SIMULATOR_INTERVENTIONS as unknown as T;
+  }
+  if (cleanEndpoint.startsWith('/solutions/simulator/interventions/') && cleanEndpoint.endsWith('/toggle')) {
+    const id = cleanEndpoint.split('/')[4];
+    const intv = MOCK_SIMULATOR_INTERVENTIONS.find(i => i.id === id);
+    if (intv) {
+      intv.selected = !intv.selected;
+      return intv as unknown as T;
+    }
+    return { success: true } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/knowledge-graph') {
+    return {
+      nodes: MOCK_GRAPH_NODES,
+      links: MOCK_GRAPH_LINKS,
+    } as unknown as T;
+  }
+
+  if (cleanEndpoint === '/solutions/ward-scores') {
+    return MOCK_WARD_SCORES as unknown as T;
+  }
+
   // Generic fallback
   return {} as unknown as T;
 }
@@ -529,4 +669,32 @@ export const api = {
     request<User>(`/admin/users/${userId}/role?role=${encodeURIComponent(role)}`, { method: 'PATCH' }),
   getAuditLogs: () => request<AuditLog[]>('/admin/audit-logs'),
   getModelEvaluations: () => request<ModelEvaluation>('/admin/model-evaluations'),
+
+  // 21 CivicNexus Solutions
+  getNearbyIssues: () => request<NearbyCivicIssue[]>('/solutions/nearby-issues'),
+  supportNearbyIssue: (id: string) => request<NearbyCivicIssue>(`/solutions/nearby-issues/${id}/support`, { method: 'POST' }),
+  getRepairProofs: () => request<RepairProofRecord[]>('/solutions/repair-proofs'),
+  voteRepairProof: (report_id: string, vote: 'confirmed' | 'disputed') =>
+    request<RepairProofRecord>(`/solutions/repair-proofs/${report_id}/vote`, {
+      method: 'POST',
+      body: JSON.stringify({ vote }),
+    }),
+  getComplaintTracking: (id: string) => request<ComplaintTrackingStep[]>(`/solutions/tracking/${id}`),
+  getSafeRouteHazards: () => request<SafeRouteHazard[]>('/solutions/safe-route/hazards'),
+  getPublicAlerts: () => request<PublicServiceAlert[]>('/solutions/alerts'),
+  toggleAlertSubscription: (id: string) => request<PublicServiceAlert>(`/solutions/alerts/${id}/toggle`, { method: 'POST' }),
+  getOverdueCases: () => request<OverdueEscalationCase[]>('/solutions/overdue-cases'),
+  escalateOverdueCase: (report_id: string) =>
+    request<OverdueEscalationCase>(`/solutions/overdue-cases/${report_id}/escalate`, { method: 'POST' }),
+  getAccessibilityBarriers: () => request<AccessibilityBarrier[]>('/solutions/accessibility-barriers'),
+  reportAccessibilityBarrier: (data: Partial<AccessibilityBarrier>) =>
+    request<AccessibilityBarrier>('/solutions/accessibility-barriers', { method: 'POST', body: JSON.stringify(data) }),
+  getPublicFacilities: () => request<PublicFacility[]>('/solutions/public-facilities'),
+  getCommunityEvents: () => request<CommunityEvent[]>('/solutions/community-events'),
+  toggleEventRSVP: (id: string) => request<CommunityEvent>(`/solutions/community-events/${id}/rsvp`, { method: 'POST' }),
+  getSimulatorInterventions: () => request<SimulatorIntervention[]>('/solutions/simulator/interventions'),
+  toggleSimulatorIntervention: (id: string) =>
+    request<SimulatorIntervention>(`/solutions/simulator/interventions/${id}/toggle`, { method: 'POST' }),
+  getKnowledgeGraphData: () => request<{ nodes: CivicGraphNode[]; links: CivicGraphLink[] }>('/solutions/knowledge-graph'),
+  getWardAccountabilityScores: () => request<WardAccountabilityScore[]>('/solutions/ward-scores'),
 };
