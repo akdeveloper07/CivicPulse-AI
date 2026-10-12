@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import (
-    auth, reports, matching, clusters, recurrence, root_causes, recommendations, forecasting, analytics, admin, health
+    auth, reports, matching, clusters, recurrence, root_causes, recommendations, forecasting, analytics, admin, health, solutions
 )
 
 api_router = APIRouter()
@@ -15,4 +15,5 @@ api_router.include_router(recommendations.router, prefix="", tags=["Resolution R
 api_router.include_router(forecasting.router, prefix="/analytics", tags=["Issue Volume Forecasting"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics & Fairness"])
 api_router.include_router(admin.router, prefix="/admin", tags=["System Administration"])
+api_router.include_router(solutions.router, prefix="/solutions", tags=["Civic Solutions & Emergency SOS"])
 api_router.include_router(health.router, tags=["Health & Status"])

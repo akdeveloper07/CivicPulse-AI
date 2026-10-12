@@ -451,6 +451,10 @@ export const MOCK_NEARBY_ISSUES: NearbyCivicIssue[] = [
     last_confirmed: '15 mins ago',
     is_verified_hazard: true,
     address: '100ft Road, Near Metro Station, Indiranagar',
+    location_name: '100ft Road, Near Metro Station, Indiranagar',
+    department: 'Highways & Bus Route Roads Wing',
+    description: 'Deep 10-inch asphalt rupture next to the north metro pillar. High risk to two-wheelers and night cyclists.',
+    urgency: 'High',
   },
   {
     id: 'iss-nb-02',
@@ -466,6 +470,10 @@ export const MOCK_NEARBY_ISSUES: NearbyCivicIssue[] = [
     last_confirmed: '40 mins ago',
     is_verified_hazard: true,
     address: '12th Main Road, HAL 2nd Stage',
+    location_name: '12th Main Road, HAL 2nd Stage',
+    department: 'GCC Stormwater Drainage (SWD) Wing',
+    description: 'Collapsed culvert cover slab with exposed reinforcement rebar. Pedestrians forced into busy traffic lane.',
+    urgency: 'Critical',
   },
   {
     id: 'iss-nb-03',
@@ -481,6 +489,10 @@ export const MOCK_NEARBY_ISSUES: NearbyCivicIssue[] = [
     last_confirmed: '2 hours ago',
     is_verified_hazard: false,
     address: 'Double Road Corner, Ward 2',
+    location_name: 'Double Road Corner, Ward 2',
+    department: 'Solid Waste Management (SWM) Wing',
+    description: 'Dumpster uncollected for 3 days spilling onto commercial pavement, emitting foul odor near food stalls.',
+    urgency: 'Moderate',
   },
   {
     id: 'iss-nb-04',
@@ -496,6 +508,10 @@ export const MOCK_NEARBY_ISSUES: NearbyCivicIssue[] = [
     last_confirmed: 'Yesterday',
     is_verified_hazard: true,
     address: 'Defence Colony Main Avenue',
+    location_name: 'Defence Colony Main Avenue',
+    department: 'TANGEDCO Electrical Maintenance Division',
+    description: 'Dark stretch spanning 250 meters. Pedestrian safety hazard reported especially by women and night commuters.',
+    urgency: 'High',
   },
   {
     id: 'iss-nb-05',
@@ -511,6 +527,10 @@ export const MOCK_NEARBY_ISSUES: NearbyCivicIssue[] = [
     last_confirmed: '3 hours ago',
     is_verified_hazard: true,
     address: 'CMH Road Metro Corridor, Pillars 64-66',
+    location_name: 'CMH Road Metro Corridor, Pillars 64-66',
+    department: 'CMWSSB Water Supply & Sewerage Board',
+    description: 'Continuous drinking water surge washing away bitumen sub-base. Road foundation sinking near bus bay.',
+    urgency: 'High',
   },
 ];
 

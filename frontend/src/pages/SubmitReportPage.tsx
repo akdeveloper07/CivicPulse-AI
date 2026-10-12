@@ -6,7 +6,8 @@ import { IssueCategory, CandidateMatch } from '../types';
 import { Modal } from '../components/common/Modal';
 import {
   AlertCircle, Sparkles, CheckCircle2, Send, MapPin, Layers,
-  Camera, Upload, X, Navigation, Crosshair, HelpCircle, ArrowRight
+  Camera, Upload, X, Navigation, Crosshair, HelpCircle, ArrowRight,
+  ThumbsUp, Search
 } from 'lucide-react';
 
 export const SubmitReportPage: React.FC = () => {
@@ -39,6 +40,7 @@ export const SubmitReportPage: React.FC = () => {
   const [similarCandidates, setSimilarCandidates] = useState<CandidateMatch[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(false);
+  const [duplicateCheckedMessage, setDuplicateCheckedMessage] = useState<string | null>(null);
 
   useEffect(() => {
     api.getCategories().then((cats) => {
@@ -113,6 +115,58 @@ export const SubmitReportPage: React.FC = () => {
     setImageName(null);
   };
 
+  const handleManualDuplicateCheck = async () => {
+    if (title.trim().length < 3) {
+      setError('Please type at least 3 characters in the title to screen for duplicates.');
+      return;
+    }
+    setError(null);
+    setIsCheckingDuplicates(true);
+    setDuplicateCheckedMessage(null);
+
+    try {
+      const matches = await api.checkSimilarity({
+        title,
+        description,
+        category_id: categoryId,
+      });
+
+      const highMatches = (matches || []).filter((m) => m.similarity_score >= 0.50);
+      if (highMatches.length > 0) {
+        setSimilarCandidates(highMatches);
+        setIsModalOpen(true);
+      } else {
+        setDuplicateCheckedMessage('No duplicate complaints found for your area! Your issue appears completely unique.');
+        setTimeout(() => setDuplicateCheckedMessage(null), 5000);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Duplicate screening failed.');
+    } finally {
+      setIsCheckingDuplicates(false);
+    }
+  };
+
+  const handleBackExistingIssue = async (reportId: string) => {
+    try {
+      await api.supportReport(reportId);
+      setIsModalOpen(false);
+      realTimeService.broadcast({
+        id: `evt-sup-${Date.now()}`,
+        timestamp: 'Just now',
+        type: 'NEW_REPORT',
+        title: `Community Backed Issue: ${title || 'Existing Report'}`,
+        description: `Citizen backed existing complaint #${reportId} to boost priority without duplicate tickets.`,
+        ward: approximateArea || 'Ward 104',
+        department: 'GCC Works & Public Infrastructure',
+        status: 'Priority Boosted',
+        urgency: 'high',
+      });
+      navigate(`/reports/${reportId}`);
+    } catch {
+      navigate('/dashboard');
+    }
+  };
+
   const handlePreCheckAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -136,7 +190,7 @@ export const SubmitReportPage: React.FC = () => {
         category_id: categoryId
       });
 
-      const highMatches = (matches || []).filter((m) => m.similarity_score >= 0.65);
+      const highMatches = (matches || []).filter((m) => m.similarity_score >= 0.55);
       if (highMatches.length > 0) {
         setSimilarCandidates(highMatches);
         setIsModalOpen(true);
@@ -221,6 +275,13 @@ export const SubmitReportPage: React.FC = () => {
           </div>
         )}
 
+        {duplicateCheckedMessage && (
+          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-fade-in shadow-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{duplicateCheckedMessage}</span>
+          </div>
+        )}
+
         <form onSubmit={handlePreCheckAndSubmit} className="space-y-6">
           {/* Issue Title */}
           <div>
@@ -235,6 +296,18 @@ export const SubmitReportPage: React.FC = () => {
               placeholder="e.g. Hazardous Deep Pothole at MG Road Bus Stop"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm font-medium"
             />
+            <div className="flex flex-wrap items-center justify-between gap-1.5 mt-1.5">
+              <span className="text-[11px] text-slate-400">Be descriptive for accurate AI duplicate matching</span>
+              <button
+                type="button"
+                onClick={handleManualDuplicateCheck}
+                disabled={isCheckingDuplicates || !title.trim()}
+                className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1 hover:underline disabled:opacity-40"
+              >
+                <Search className="w-3.5 h-3.5" />
+                <span>{isCheckingDuplicates ? 'Screening Database...' : '🔍 Find Similar / Duplicate Reports'}</span>
+              </button>
+            </div>
           </div>
 
           {/* One-Tap Category Quick Selection */}
@@ -486,7 +559,7 @@ export const SubmitReportPage: React.FC = () => {
 
           <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
             {similarCandidates.map((cand) => (
-              <div key={cand.report_id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div key={cand.report_id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3 shadow-xs">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-navy-900 truncate">{cand.title}</span>
                   <span className="badge-pill bg-teal-100 text-teal-800 font-bold shrink-0">
@@ -497,6 +570,16 @@ export const SubmitReportPage: React.FC = () => {
                 <div className="text-[11px] text-slate-500 italic bg-white p-2 rounded border border-slate-200">
                   <span className="font-semibold text-slate-600 not-italic">Match Evidence: </span>
                   {cand.matched_evidence}
+                </div>
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 border-t border-slate-200">
+                  <span className="text-[11px] text-slate-500 font-medium">Status: <b>{cand.status}</b></span>
+                  <button
+                    type="button"
+                    onClick={() => handleBackExistingIssue(cand.report_id)}
+                    className="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <ThumbsUp className="w-3.5 h-3.5" /> Back This Issue (+1 Upvote)
+                  </button>
                 </div>
               </div>
             ))}

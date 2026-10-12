@@ -5,7 +5,7 @@ import { UserRole } from '../../types';
 import {
   Activity, Shield, FileText, Layers, GitMerge, AlertTriangle,
   Lightbulb, TrendingUp, Cpu, LogOut, LogIn, UserPlus, Menu, X, CheckCircle2,
-  Sparkles, MapPin, Building2, ChevronDown, Lock, Plus, Hammer, Camera, Waves, Zap
+  Sparkles, MapPin, Building2, ChevronDown, Lock, Plus, Hammer, Camera, Waves, Zap, Siren
 } from 'lucide-react';
 
 const ROLE_LABELS: Record<UserRole, { label: string; badge: string; color: string; dashboardTitle: string }> = {
@@ -247,6 +247,16 @@ export const Header: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Quick 1-Tap Life Safety SOS Button */}
+            <Link
+              to="/emergency-sos"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-md shadow-rose-600/30 transition-all hover:scale-105 active:scale-95 animate-pulse ml-1"
+              title="1070 Emergency Civic Hazard SOS"
+            >
+              <Siren className="w-3.5 h-3.5" />
+              <span>SOS 1070</span>
+            </Link>
           </nav>
 
           {/* User Status, 1-Click Role Switcher, & Auth Buttons */}
@@ -345,6 +355,16 @@ export const Header: React.FC = () => {
       {/* Clean Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2 max-h-[85vh] overflow-y-auto">
+          {/* Mobile Emergency SOS */}
+          <Link
+            to="/emergency-sos"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-rose-600 text-white font-black text-xs shadow-md shadow-rose-600/30 uppercase tracking-wider animate-pulse"
+          >
+            <Siren className="w-4 h-4" />
+            <span>🚨 1070 Emergency SOS Desk</span>
+          </Link>
+
           <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">
             Overview
           </Link>

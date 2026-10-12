@@ -38,6 +38,15 @@ def rank_candidate_matches(
             cand_vec, _ = generate_embedding(cand_text)
 
         sim_score = compute_cosine_similarity(source_embedding, cand_vec)
+        if sim_score < 0.1:
+            words1 = set(normalize_text(full_source_text).split())
+            words2 = set(normalize_text(cand_text).split())
+            stop_words = {"the", "a", "an", "is", "in", "at", "of", "and", "or", "to", "for", "on", "with", "this", "that", "there", "has", "been", "reported", "issue", "problem", "near", "area"}
+            w1 = words1 - stop_words
+            w2 = words2 - stop_words
+            if w1 and w2 and len(w1 & w2) > 0:
+                jaccard = len(w1 & w2) / len(w1 | w2)
+                sim_score = max(sim_score, jaccard)
         
         # Determine confidence level & recommendation state
         if sim_score >= settings.SIMILARITY_THRESHOLD_DUPLICATE:

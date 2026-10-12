@@ -71,6 +71,45 @@ function saveCustomReport(rep: Report) {
   }
 }
 
+function getStoredEmergencyAlerts(): EmergencyHazardAlert[] {
+  try {
+    const raw = localStorage.getItem('civicpulse_custom_emergency_alerts');
+    if (raw) return [...JSON.parse(raw), ...MOCK_EMERGENCY_ALERTS];
+  } catch (e) {
+    // ignore
+  }
+  return [...MOCK_EMERGENCY_ALERTS];
+}
+
+function saveCustomEmergencyAlert(alert: EmergencyHazardAlert) {
+  try {
+    const existingRaw = localStorage.getItem('civicpulse_custom_emergency_alerts');
+    const list = existingRaw ? JSON.parse(existingRaw) : [];
+    list.unshift(alert);
+    localStorage.setItem('civicpulse_custom_emergency_alerts', JSON.stringify(list));
+  } catch (e) {
+    // ignore
+  }
+}
+
+function getStoredMatchQueue(): ReportMatch[] {
+  try {
+    const raw = localStorage.getItem('civicpulse_match_queue');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    // ignore
+  }
+  return [...MOCK_MATCH_QUEUE];
+}
+
+function saveMatchQueue(list: ReportMatch[]) {
+  try {
+    localStorage.setItem('civicpulse_match_queue', JSON.stringify(list));
+  } catch (e) {
+    // ignore
+  }
+}
+
 /**
  * Intelligent Fallback Handler:
  * When the FastAPI backend is offline, unreachable, or deployed statically,
@@ -168,29 +207,104 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit = {}): T {
     return MOCK_CATEGORIES as unknown as T;
   }
 
-  // 6. Check Similarity (Pre-submission deduplication check)
+  // 6. Check Similarity (Pre-submission deduplication check across all categories)
   if (cleanEndpoint === '/reports/check-similarity') {
     let title = '';
+    let description = '';
+    let category_id = '';
     try {
       const body = JSON.parse((options.body as string) || '{}');
-      title = body.title || '';
+      title = (body.title || '').trim();
+      description = (body.description || '').trim();
+      category_id = (body.category_id || '').trim();
     } catch (e) {}
 
-    const isRoadRelated = /pothole|road|crater|asphalt|tire|rim/i.test(title);
-    const candidateMatches: CandidateMatch[] = isRoadRelated ? [
-      {
-        report_id: 'rep-001',
-        title: 'Severe crater pothole causing vehicular damage on MG Road',
-        description: 'Deep 12-inch crater pothole on northbound lane near Metro Pillar 142.',
-        category_name: 'Potholes & Road Damage',
-        similarity_score: 0.942,
-        confidence_level: 'High',
-        matched_evidence: 'Exact spatial match within 30 meters + semantic embedding match for road fissure.',
-        status: 'In Progress',
-        created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+    const queryText = `${title} ${description}`.toLowerCase();
+    const queryTokens = new Set(
+      queryText.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 2)
+    );
+
+    const allReports = getStoredReports();
+    const matches: CandidateMatch[] = [];
+    const stopWords = new Set(['the', 'and', 'for', 'with', 'this', 'that', 'near', 'from', 'area', 'road', 'issue', 'reported']);
+
+    for (const rep of allReports) {
+      const repText = `${rep.title} ${rep.description}`.toLowerCase();
+      const repTokens = new Set(
+        repText.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 2)
+      );
+
+      // 1. Calculate Jaccard Token Overlap
+      let overlapCount = 0;
+      const overlappingWords: string[] = [];
+      queryTokens.forEach((t) => {
+        if (repTokens.has(t)) {
+          overlapCount++;
+          if (!stopWords.has(t)) overlappingWords.push(t);
+        }
+      });
+
+      const unionSize = new Set([...queryTokens, ...repTokens]).size;
+      const tokenScore = unionSize > 0 ? overlapCount / unionSize : 0;
+
+      // 2. Category Match bonus
+      const isCategoryMatch = category_id && rep.category_id === category_id;
+      const categoryBonus = isCategoryMatch ? 0.22 : 0;
+
+      // 3. Substring / phrase match bonus
+      const titleLower = title.toLowerCase();
+      const repTitleLower = rep.title.toLowerCase();
+      const phraseMatch =
+        (titleLower.length > 6 && repTitleLower.includes(titleLower)) ||
+        (repTitleLower.length > 6 && titleLower.includes(repTitleLower));
+      const phraseBonus = phraseMatch ? 0.35 : 0;
+
+      // 4. Spatial / Area keyword match
+      let spatialBonus = 0;
+      if (rep.approximate_area && queryText.includes(rep.approximate_area.toLowerCase())) {
+        spatialBonus = 0.2;
       }
-    ] : [];
-    return candidateMatches as unknown as T;
+
+      // Compute composite similarity score
+      let score = Math.min(0.98, tokenScore * 1.6 + categoryBonus + phraseBonus + spatialBonus);
+
+      // Category semantic boosters
+      if (/pothole|crater|asphalt|tire|rim/i.test(queryText) && /pothole|crater|asphalt/i.test(repText)) {
+        score = Math.max(score, 0.89);
+      } else if (/drain|flood|waterlog|stormwater|culvert/i.test(queryText) && /drain|flood|waterlog|culvert/i.test(repText)) {
+        score = Math.max(score, 0.86);
+      } else if (/pipe|leak|burst|potable/i.test(queryText) && /pipe|leak|burst|water/i.test(repText)) {
+        score = Math.max(score, 0.85);
+      } else if (/streetlight|dark|lamp|wire/i.test(queryText) && /street|lamp|dark|light/i.test(repText)) {
+        score = Math.max(score, 0.84);
+      } else if (/garbage|dump|waste|sanitation/i.test(queryText) && /garbage|dump|waste|sanitation/i.test(repText)) {
+        score = Math.max(score, 0.83);
+      }
+
+      // Threshold: return candidate matches with score >= 0.50
+      if (score >= 0.50) {
+        const evidenceTerms =
+          overlappingWords.length > 0
+            ? `Matched key concepts: "${overlappingWords.slice(0, 4).join(', ')}"`
+            : 'High semantic category & structural symptom alignment';
+        const spatialNote = rep.approximate_area ? ` · Landmark: ${rep.approximate_area}` : '';
+
+        matches.push({
+          report_id: rep.id,
+          title: rep.title,
+          description: rep.description,
+          category_name: rep.category?.name || 'General Civic Issue',
+          similarity_score: Math.round(score * 1000) / 1000,
+          confidence_level: score >= 0.80 ? 'High' : score >= 0.65 ? 'Moderate' : 'Low',
+          matched_evidence: `${evidenceTerms}${spatialNote}`,
+          status: rep.status,
+          created_at: rep.created_at,
+        });
+      }
+    }
+
+    matches.sort((a, b) => b.similarity_score - a.similarity_score);
+    return matches.slice(0, 5) as unknown as T;
   }
 
   // 7. Reports List & Creation
@@ -236,11 +350,23 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit = {}): T {
 
   // 10. AI Review Queue
   if (cleanEndpoint === '/ai/review-queue') {
-    return MOCK_MATCH_QUEUE as unknown as T;
+    return getStoredMatchQueue() as unknown as T;
   }
 
   if (cleanEndpoint.includes('/decision')) {
-    return { ...MOCK_MATCH_QUEUE[0], decision: 'Confirmed duplicate' } as unknown as T;
+    const matchId = cleanEndpoint.split('/')[3] || 'mtch-001';
+    let body: any = {};
+    try { body = JSON.parse((options.body as string) || '{}'); } catch (e) {}
+    const decision = body.decision || 'Confirmed duplicate';
+    const queue = getStoredMatchQueue();
+    const item = queue.find((m) => m.id === matchId);
+    if (item) {
+      item.decision = decision;
+      item.decision_reason = body.reason || 'Reviewed by Administrator';
+      saveMatchQueue(queue);
+      return item as unknown as T;
+    }
+    return { ...MOCK_MATCH_QUEUE[0], decision } as unknown as T;
   }
 
   if (cleanEndpoint === '/ai/uncertainty') {
@@ -557,7 +683,25 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit = {}): T {
     return MOCK_POWER_GRID as unknown as T;
   }
   if (cleanEndpoint === '/solutions/emergency-alerts') {
-    return MOCK_EMERGENCY_ALERTS as unknown as T;
+    if (method === 'POST') {
+      let body: any = {};
+      try { body = JSON.parse((options.body as string) || '{}'); } catch (e) {}
+      const newAlert: EmergencyHazardAlert = {
+        id: `sos-${Date.now().toString().slice(-4)}`,
+        hazard_type: body.hazard_type || 'Live Wire / Electrocution',
+        severity: body.severity || 'Immediate Danger to Life',
+        location: body.location || 'Anna Nagar 2nd Avenue, near Roundtana',
+        dispatched_agencies: Array.isArray(body.dispatched_agencies) && body.dispatched_agencies.length > 0
+          ? body.dispatched_agencies
+          : ['TANGEDCO Feeder Quick Reaction', 'TN Fire & Rescue 101', 'GCC Disaster Desk'],
+        reported_by: body.reported_by || 'Citizen via Emergency Desk',
+        eta_emergency_crew: body.eta_emergency_crew || '5 mins',
+        status: body.status || 'Active Alert',
+      };
+      saveCustomEmergencyAlert(newAlert);
+      return newAlert as unknown as T;
+    }
+    return getStoredEmergencyAlerts() as unknown as T;
   }
 
   // Generic fallback
@@ -582,6 +726,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
         let errorMsg = `API Error: ${res.statusText}`;
         try {
           const errJson = await res.json();
+          // If backend returned 404 for a solution endpoint, gracefully fallback to mock data
+          if (res.status === 404 && endpoint.startsWith('/solutions/')) {
+            console.warn(`[CivicPulse API] Solution endpoint ${endpoint} returned 404 on backend. Falling back to local demo data.`);
+            return handleMockFallback<T>(endpoint, options);
+          }
           if (errJson.detail) {
             errorMsg = typeof errJson.detail === 'string' ? errJson.detail : JSON.stringify(errJson.detail);
           }
@@ -781,4 +930,16 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  supportReport: (reportId: string) => {
+    try {
+      const all = getStoredReports();
+      const found = all.find((r) => r.id === reportId);
+      if (found) {
+        found.impact = Math.min(10, (found.impact || 3) + 1);
+        found.urgency = Math.min(10, (found.urgency || 3) + 1);
+        saveCustomReport(found);
+      }
+    } catch (e) {}
+    return Promise.resolve({ success: true, message: 'Existing complaint upvoted and prioritized.' });
+  },
 };
