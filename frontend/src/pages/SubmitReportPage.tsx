@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
+import { uploadReportImage } from '../services/storage';
+import { auth } from '../lib/firebase';
 import { realTimeService } from '../services/realtime';
 import { IssueCategory, CandidateMatch } from '../types';
 import { Modal } from '../components/common/Modal';
@@ -93,6 +95,7 @@ export const SubmitReportPage: React.FC = () => {
   };
 
   // Photo Attachment Handler
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -102,6 +105,7 @@ export const SubmitReportPage: React.FC = () => {
       return;
     }
 
+    setSelectedFile(file);
     setImageName(file.name);
     const reader = new FileReader();
     reader.onload = () => {
@@ -209,6 +213,11 @@ export const SubmitReportPage: React.FC = () => {
     setIsSubmitting(true);
     setIsModalOpen(false);
     try {
+      // Upload selected photo to Firebase Storage if present
+      let imageUrl: string | undefined = undefined;
+      if (selectedFile) {
+        imageUrl = await uploadReportImage(selectedFile, auth.currentUser?.uid ?? '');
+      }
       await api.createReport({
         title,
         description,
@@ -218,7 +227,7 @@ export const SubmitReportPage: React.FC = () => {
         approximate_area: approximateArea,
         latitude: latitude || undefined,
         longitude: longitude || undefined,
-        image_url: imagePreview || undefined
+        image_url: imageUrl,
       });
 
       // Broadcast real-time civic incident event across application
@@ -604,3 +613,5 @@ export const SubmitReportPage: React.FC = () => {
     </div>
   );
 };
+
+import { uploadReportImage } from '../services/storage';

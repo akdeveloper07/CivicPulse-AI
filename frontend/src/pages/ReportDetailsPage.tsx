@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { Report, PriorityExplanation } from '../types';
-import { StatusBadge, PriorityBadge } from '../components/common/Badge';
+import { ShareButton } from '../components/common/ShareButton';
 import { ArrowLeft, MapPin, Calendar, CheckCircle, Clock, AlertTriangle, Layers } from 'lucide-react';
 
 export const ReportDetailsPage: React.FC = () => {
@@ -60,6 +60,7 @@ export const ReportDetailsPage: React.FC = () => {
             <h1 className="text-2xl font-extrabold text-navy-900">{report.title}</h1>
           </div>
           <StatusBadge status={report.status} />
+        <ShareButton url={`${window.location.origin}/reports/${report.id}`} title={report.title} />
         </div>
 
         <div className="space-y-3">
