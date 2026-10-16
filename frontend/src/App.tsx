@@ -39,6 +39,9 @@ import { OverdueEscalationPage } from './pages/OverdueEscalationPage';
 import { CivicSimulatorPage } from './pages/CivicSimulatorPage';
 import { CivicKnowledgeGraphPage } from './pages/CivicKnowledgeGraphPage';
 import { CivicImpactAnalyticsPage } from './pages/CivicImpactAnalyticsPage';
+import { AskMyLocalityPage } from './pages/AskMyLocalityPage';
+import { NeighbourhoodEarlyWarningPage } from './pages/NeighbourhoodEarlyWarningPage';
+import { FeaturesDirectoryPage } from './pages/FeaturesDirectoryPage';
 
 // 15 Flagship Municipal Features Pages
 import { DepartmentDirectoryPage } from './pages/DepartmentDirectoryPage';
@@ -89,6 +92,9 @@ export const App: React.FC = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
+              <Route path="/ask-locality" element={<AskMyLocalityPage />} />
+              <Route path="/early-warning" element={<NeighbourhoodEarlyWarningPage />} />
+              <Route path="/features-directory" element={<FeaturesDirectoryPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/gis-heatmap" element={<GISHeatmapPage />} />

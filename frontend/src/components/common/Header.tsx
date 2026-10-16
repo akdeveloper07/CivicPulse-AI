@@ -5,7 +5,8 @@ import { UserRole } from '../../types';
 import {
   Activity, Shield, FileText, Layers, GitMerge, AlertTriangle,
   Lightbulb, TrendingUp, Cpu, LogOut, LogIn, UserPlus, Menu, X, CheckCircle2,
-  Sparkles, MapPin, Building2, ChevronDown, Lock, Plus, Hammer, Camera, Waves, Zap, Siren
+  Sparkles, MapPin, Building2, ChevronDown, Lock, Plus, Hammer, Camera, Waves, Zap, Siren,
+  HelpCircle, Radio
 } from 'lucide-react';
 
 const ROLE_LABELS: Record<UserRole, { label: string; badge: string; color: string; dashboardTitle: string }> = {
@@ -94,6 +95,26 @@ export const Header: React.FC = () => {
               }`}
             >
               Overview
+            </Link>
+
+            <Link
+              to="/ask-locality"
+              className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
+                isActive('/ask-locality') ? 'bg-slate-100 text-teal-600 font-semibold' : 'text-slate-600 hover:text-navy-900 hover:bg-slate-50'
+              }`}
+            >
+              <HelpCircle className="w-4 h-4 text-teal-600" />
+              <span>Ask Locality</span>
+            </Link>
+
+            <Link
+              to="/early-warning"
+              className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
+                isActive('/early-warning') ? 'bg-rose-50 text-rose-700 font-semibold border border-rose-200' : 'text-slate-600 hover:text-rose-700 hover:bg-slate-50'
+              }`}
+            >
+              <Radio className="w-4 h-4 text-rose-500" />
+              <span>Early Warning</span>
             </Link>
 
             <Link
@@ -367,6 +388,14 @@ export const Header: React.FC = () => {
 
           <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">
             Overview
+          </Link>
+          <Link to="/ask-locality" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-teal-700 hover:bg-teal-50 font-semibold flex items-center gap-2">
+            <HelpCircle className="w-4 h-4 text-teal-600" />
+            <span>Ask My Locality</span>
+          </Link>
+          <Link to="/early-warning" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-rose-700 hover:bg-rose-50 font-semibold flex items-center gap-2">
+            <Radio className="w-4 h-4 text-rose-500" />
+            <span>Neighbourhood Early Warning AI</span>
           </Link>
           <Link to="/departments" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">
             Municipal Departments
