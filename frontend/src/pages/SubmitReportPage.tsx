@@ -613,5 +613,3 @@ export const SubmitReportPage: React.FC = () => {
     </div>
   );
 };
-
-import { uploadReportImage } from '../services/storage';

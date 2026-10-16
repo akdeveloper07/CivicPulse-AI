@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { Report, PriorityExplanation } from '../types';
+import { StatusBadge, PriorityBadge } from '../components/common/Badge';
 import { ShareButton } from '../components/common/ShareButton';
 import { ArrowLeft, MapPin, Calendar, CheckCircle, Clock, AlertTriangle, Layers } from 'lucide-react';
 
